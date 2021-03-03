@@ -1,0 +1,35 @@
+.cart-dataview .product-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    width: 100%;
+}
+
+.cart-dataview .product-list-item .product-list-detail{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+.cart-dataview .product-list-item .product-list-detail .product-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: #070D4C;
+}
+
+.cart-dataview .product-list-item .product-list-detail .product-price {
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    color: #FF9C32;
+}
+.cart-dataview .product-list-item .product-list-detail .product-quantity{
+    font-size: 14px;
+    font-weight: 400;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+

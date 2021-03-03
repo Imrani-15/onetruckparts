@@ -1,0 +1,19 @@
+.footer-main{
+    background: #232F3E;
+    padding: 22px 140px;
+    color: #ffffff;
+}
+
+.footer-menu{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 4%;
+    border-bottom: 2px solid #fff;
+}
+
+.footer-menu-left-border{
+    border-left: 2px solid #fff;
+    padding: 0px 12px;
+}

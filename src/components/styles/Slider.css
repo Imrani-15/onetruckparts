@@ -1,0 +1,22 @@
+.p-carousel .p-carousel-content .p-carousel-prev{
+    right: -60px;
+    color: #fff;
+    z-index: 1;
+
+}
+.p-carousel-prev-icon , .p-carousel-next-icon{
+    font-size: larger !important;
+    font-weight: bold !important;
+}
+.p-carousel .p-carousel-content .p-carousel-next{
+    left: -60px;
+    color: #fff;
+    z-index: 1;
+
+}
+  .p-carousel-indicators{
+    display: none !important;
+  } 
+  /* .remove-btn  .p-carousel-prev,.remove-btn .p-carousel-next{
+    display: none !important;
+  } */

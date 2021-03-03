@@ -1,0 +1,31 @@
+.p-search-input{
+    width: 900px;
+    padding: 8px;
+}
+
+.navbar-main{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 10px 0px 10px;
+    background:#142977;
+    cursor: pointer;
+}
+.navbar-vl{
+    border-left: 2px solid #fff;
+    height: 20px;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+.navbar-btn-text{
+    color: #fff;
+    padding-bottom: 16px;
+    border-bottom: 4px solid transparent;
+    text-decoration: none;
+
+}
+.navbar-btn-text:hover{
+    border-bottom: 4px solid #FF9C32;
+}
+
+
