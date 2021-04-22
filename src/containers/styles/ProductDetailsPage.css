@@ -1,0 +1,122 @@
+.detailmaindiv{
+    display: flex;
+    box-sizing: border-box;
+    max-width: 100%;
+    margin: 0px auto;
+    min-width: 0px;
+    min-height: 0px;
+    flex-direction: row;
+    margin: 3%;
+}
+
+.thumbnailImage{
+    height: 70px;
+    width: 70px;
+    object-fit: contain;
+    margin-left: 4px;
+    border: 0.6px solid #ccc;
+}
+
+.product_li{
+    font-size: 14px;
+    color: #6c757d;
+    font-weight: 500;
+    line-height: 26px;
+}
+
+.p-galleria .p-galleria-thumbnail-container{
+    background: white;
+    justify-content: center !important;
+}
+
+.p-galleria-thumbnail-item{
+    opacity: 1; 
+}
+
+.p-galleria .p-galleria-item-nav{
+    background: #142977;
+    border-radius: 2rem;
+}
+
+.p-galleria .p-galleria-item-nav:hover{
+    background: #FF891E !important;
+}
+
+.p-galleria .p-galleria-item-nav:focus{
+      box-shadow: none !important;
+}
+
+
+
+.p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev{
+    background-color: #142977;
+}
+
+.p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev:hover{
+    background-color: #FF891E;
+}
+
+.p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-prev:focus{
+    box-shadow: none !important;
+}
+
+.p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next{
+    background-color: #142977;
+}
+
+.p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next:hover{
+    background-color: #FF891E;
+}
+
+.p-galleria .p-galleria-thumbnail-container .p-galleria-thumbnail-next:focus{
+    box-shadow: none !important;
+}
+
+
+.product_navbar{
+    overflow: hidden;
+    background-color: #142977;
+    position: sticky;
+    top: 0;
+    margin-left: 3%;
+    margin-right: 3%;
+    cursor: pointer;
+}
+
+.product_navbar a {
+    float: left;
+    display: block;
+    color: #fff;
+    text-align: center;
+    padding: 14px;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  
+.product_navbar a:hover {
+    background-color: #fff;
+    color: #142977;
+  }
+  
+.product_navbar a.active {
+    background-color: #FF891E;
+    color: white;
+}
+
+.product_navbar_title{
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 2%;
+    margin-bottom: 1%;
+}
+
+.product_navbar_desc{
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 6px;
+}
+
+
+
+
+

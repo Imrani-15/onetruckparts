@@ -1,4 +1,14 @@
 
+export const isNotEmpty = val =>{
+    return !!val;
+}
+
+
+export const  showToastMessage =(toastRef,type, title, detail) => {
+    return toastRef.current.show({ severity: type, summary: title, detail: detail, life: 5000 })
+ }
+
+
 export function createNavItems(inpArr){
     if(!inpArr) return;
     if(inpArr.length==0) return; 

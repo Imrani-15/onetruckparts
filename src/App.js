@@ -11,10 +11,14 @@ import Navbar from './components/Navbar/Navbar';
 
 import  HomePage from './containers/HomePage';
 import ProductDetailsPage from './containers/ProductDetailsPage';
-import './primeflex.css'
+//import './primeflex.css'
 import './App.css';
+import "antd/dist/antd.css";
 import Footer from "./components/Footer/Footer";
 import CartPage from "./containers/CartPage";
+import CheckOutPage from "./containers/CheckOutPage";
+import ProductsList from "./containers/ProductsList";
+import BrandsPage from "./containers/BrandsPage";
 
 export const appStore = configureStore();
 
@@ -32,8 +36,11 @@ class App extends Component {
         <Switch>
           
           <Route  exact path="/" handler={App} component={HomePage}/>
-          <Route   path="/productdetails"  component={ProductDetailsPage}/>
+          <Route path="/brands" component={BrandsPage} />
+          <Route path="/productslist/type:type" component={ProductsList} />
+          <Route path="/productdetails/osku:id"  component={ProductDetailsPage}/>
           <Route path="/cart" component={CartPage} />
+          <Route path="/checkout" component={CheckOutPage} />
         </Switch>
         <Footer/>
       </Router>

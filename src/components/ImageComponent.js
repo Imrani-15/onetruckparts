@@ -7,7 +7,7 @@ import React from 'react';
 
         return (
             <img src={image} style={imgStyle}
-                    onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
+            onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'}
              alt={name} />
         )
      }

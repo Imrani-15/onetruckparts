@@ -2,13 +2,22 @@ export const __DEV__ = true;
 
 export const BASE_URL = 'http://localhost:8000/';
 
+export const PRODUCT_BASE_URL = 'https://customtemplateapis-dot-gentle-epoch-277301.uk.r.appspot.com/';
+
 export const appTheme = {
   
     navBarColor: '#4781CA', 
     secondaryColor:'#EB3875',
     launchBgColor:'#361059',
-    launchTextColor:'#fff',
-    backgroundColor: '#f9f9f9' 
+    logoTextColor:'#FF891E',
+    lightText: '#6c757d',
+    dark1:'#2c2c2c',
+    dark2:'#222222',
+    dark3:'#333333',
+    dark4:'#444444',
+    dark5:'#555555',
+    dark6:'#666',
+    dark9:'#999999'
  
  
 }
@@ -201,30 +210,30 @@ export const featuredProducts = [
 export const cartProducts = [
     {
         "id":1,
-        "name":"Turbo Downpipes",
+        "title":"Turbo Downpipes",
         "price":300,
-        "imgurl":"https://assets.thiecommerce.com/production/1679-turbo---super-b-single-2/r/800x600/fff/80/b545892ac5b820ab97ecc77f37d3a4ce.jpg"
+        "image":"https://assets.thiecommerce.com/production/1679-turbo---super-b-single-2/r/800x600/fff/80/b545892ac5b820ab97ecc77f37d3a4ce.jpg"
         
     },
     {
         "id":2,
-        "name":"Fog Lights",
+        "title":"Fog Lights",
         "price":230,
-        "imgurl":"https://assets.thiecommerce.com/production/3341-ctek-battery-chargers/r/800x600/fff/80/dbb5416f9e0c015b1b45c2ffc2c202b2.jpg"
+        "image":"https://assets.thiecommerce.com/production/3341-ctek-battery-chargers/r/800x600/fff/80/dbb5416f9e0c015b1b45c2ffc2c202b2.jpg"
         
     },
     {
         "id":3,
-        "name":"Fog Lights3",
+        "title":"Fog Lights3",
         "price":230,
-        "imgurl":"https://assets.thiecommerce.com/production/8657-19122/r/800x600/fff/80/090b7af95fed7e6c7e2e4a7897718619.jpg"
+        "image":"https://assets.thiecommerce.com/production/8657-19122/r/800x600/fff/80/090b7af95fed7e6c7e2e4a7897718619.jpg"
         
     },
     {
         "id":4,
-        "name":"Fog Lights4",
+        "title":"Fog Lights4",
         "price":230,
-        "imgurl":"https://assets.thiecommerce.com/production/8662-perma-cool-ss-flex-fan-black/r/800x600/fff/80/2393754e5df842c4090ecc259254526e.jpg"
+        "image":"https://assets.thiecommerce.com/production/8662-perma-cool-ss-flex-fan-black/r/800x600/fff/80/2393754e5df842c4090ecc259254526e.jpg"
         
     }
 ]

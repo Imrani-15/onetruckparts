@@ -1,22 +1,31 @@
 import React from "react";
-import {Carousel} from 'primereact/carousel';
+import {Carousel} from 'antd';
 
 import './styles/Slider.css'
 
 
-const Slider = ({ data, isLoading }) => {
+const Slider = ({ data, goToBrandsPage }) => {
   return (
-   <Carousel 
-   style={{backgroundColor: '#EAEDED'}}
-   autoplayInterval={10000}
-   value={data} itemTemplate={(item)=>{
-     return(
-       <div>
-           <img src={item.imgurl}  style={{height:'100%',width:'100%'}} />
-       </div>
-      
-     )
-   }} numVisible={1}></Carousel> 
+  <div  class="container">
+      <Carousel autoplay dots={false}>
+        {data.map((item)=>{
+        return(
+          <div style={{display:'flex'}}>
+              <img src={item.imgurl}  style={{height:'100%',width:'140%',}}
+                onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'} />
+          </div>
+          
+        )
+        })}
+       </Carousel>
+      {/* <div class="overlay">
+        <div style={{alignSelf:'flex-end', fontSize:16, fontWeight:'500'}} onClick={() => goToBrandsPage()}>
+          Shop By Brand
+        </div>
+      </div> */}
+
+  </div>
+ 
   );
 };
 

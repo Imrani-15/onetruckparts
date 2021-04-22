@@ -10,24 +10,36 @@ function buildDataRequest(inpobj) {
 }
 
 function getHeaders(){
-    return  { headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+    return  {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
 }
 
 function getSecureHeaders(){
-    return  { headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+    return  { headers: {'Content-Type': 'application/x-www-form-urlencoded'}, withCredentials: true}
 }
 
 
-export default function serviceApi(inpobj,methodName,type='get',secure=false){
+export default function serviceCall(inpobj,restUrl,type='GET',secure=false){
     let headers = (secure) ?  getSecureHeaders() : getHeaders();
 
     return new Promise((resolve,reject)=>{
-        axios({
-            method: type,
-            url: BASE_URL+methodName,
-            data: buildDataRequest(inpobj),
-            config: headers
-        }).then((res)=>resolve(res))
+        if(type === 'GET'){
+            axios.get(restUrl, headers)
+            .then((res)=>resolve(res))
             .catch((err)=>reject(err))
+        }else{
+            axios({
+                method: type,
+                url: restUrl,
+                data: inpobj,
+                config: headers
+            }).then((res)=>resolve(res))
+                .catch((err)=>reject(err))
+        }
+       
     })
 }

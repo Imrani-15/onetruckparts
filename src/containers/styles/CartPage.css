@@ -33,3 +33,20 @@
     margin-bottom: 5px;
 }
 
+.cartdetailsAlign{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px
+}
+
+.cartdetailsText{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.totalText{
+    font-size: 22px;
+    font-weight: 600;
+}
+

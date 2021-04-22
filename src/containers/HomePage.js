@@ -4,7 +4,9 @@ import { Carousel } from 'primereact/carousel';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
 import Slider from '../components/Slider';
-import {featuredProducts} from '../utils/Constants';
+import serviceCall from '../utils/Services';
+import { Skeleton } from 'primereact/skeleton';
+import {PRODUCT_BASE_URL} from '../utils/Constants';
 import './styles/HomePage.css'
 
 class HomePage extends React.Component {
@@ -14,9 +16,11 @@ class HomePage extends React.Component {
         super(props);
         this.state={
             sliderList:[],
-            featuredProducts:featuredProducts,
+            dummyArray:[1,2,3,4,5,6],
+            featuredProducts:[],
             showDilalog:false,
-            selectedPrd:{}
+            selectedPrd:{},
+            showFeaturedProducts:true
         }
         Carousel.changePageOnTouch = (e,diff) => {
             if (diff < 0) {
@@ -28,9 +32,27 @@ class HomePage extends React.Component {
         }
     }
 
-    componentDidMount(){
-        this.getSlider()
+    componentWillMount(){
+        this.getSlider();
+        this.getProductsByCategory();
     }
+
+
+    getProductsByCategory = () => {
+
+        let restUrl = `${PRODUCT_BASE_URL}prod/home`
+        serviceCall({}, restUrl, 'GET')
+            .then((res) => {
+                if (!res.error) {
+                    this.setState({ featuredProducts: res.data.data,showFeaturedProducts:false })
+                } else {
+
+                }
+            })
+            .catch((error) => {
+            })
+    }
+
     getSlider(){
         let sliders = [
             {id:1, imgurl:'https://www.onetruck.us/assets/images/truckimg1.jpg'},
@@ -45,12 +67,9 @@ class HomePage extends React.Component {
             <div className="product-item" onClick={() => this.displayDialog(product)}>
                 <div className="product-item-content">
                     <div className="p-mb-3">
-                        <img src={product.imgurl} 
-                        onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
+                        <img src={product.image} 
+                        onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'}
                          alt={product.name} className="product-image grow " />
-                    </div>
-                    <div>
-                        <div className="p-mt-2" style={{color:'#333',fontWeight:'500'}}>{product.name}</div>
                     </div>
                 </div>
             </div>
@@ -66,47 +85,45 @@ class HomePage extends React.Component {
     }
 
     goToProductDetailPage(){
-        this.props.history.push("/productdetails")
+        const {selectedPrd} = this.state;
+        this.props.history.push('/productdetails/osku:'+ selectedPrd.osku, {selectedProduct:selectedPrd})
     }
+
+    goToBrandsPage=()=>{
+        this.props.history.push('/brands')
+     }
 
 
     render(){
-        const {sliderList,featuredProducts,showDilalog,selectedPrd}=this.state;
-
+        const {sliderList,featuredProducts,showDilalog,selectedPrd,showFeaturedProducts, dummyArray}=this.state;
+        
         return(
-            <Fragment >
-                <Slider data={sliderList}/>
-                
+            <Fragment>
+                <Slider data={sliderList} goToBrandsPage={this.goToBrandsPage.bind(this)}/>
+                {showFeaturedProducts ? 
                 <div className="homePage-style">
-
-               
-                {featuredProducts.map((cat)=>(
-                    (cat.type === 'scroll')?
-                    <div className="carousel-featured-products">
-                        <Carousel value={cat.items} numVisible={4} numScroll={2} 
-                        itemTemplate={this.renderProductTemplate.bind(this)} header={<h3>{cat.name}</h3>} />
-                    </div> :
-                    <div className="carousel-featured-products grid-product-style" >
-                        {cat.items.map((product,index)=>(
-                            <div style={{display:'flex',flexDirection: 'row',alignItems: 'center', justifyContent:'center', 
-                             borderRight:(index === 0) ? "0.8px solid var(--surface-d)" : '',paddingRight:(index === 0) ? 40 :0,}}>
-                                     <div style={{fontSize:22,marginRight: 60,fontWeight: '400',}}>{product.name}</div>
-                                     <img src={product.imgurl} 
-                        onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
-                         alt={product.name} style={{height:150}} />
-                            </div>
-                        ))}
-                    </div>
-                ))}
-                 </div>
+                    {dummyArray.map((cat)=>(
+                        <div className="carousel-featured-products">
+                             <Skeleton width="100%" height="240px" />
+                        </div>
+                    ))}
+                </div> :
+                <div className="homePage-style">
+                    {featuredProducts.length !==0 && featuredProducts.map((cat)=>(
+                        <div className="carousel-featured-products">
+                            <Carousel value={cat.items} numVisible={4} numScroll={2} 
+                            itemTemplate={this.renderProductTemplate.bind(this)} header={<h3 style={{fontWeight:'bold'}}>{cat.category}</h3>} />
+                        </div> 
+                    ))}
+                 </div> }
                  <Dialog visible={showDilalog} style={{ width: '50vw' }} 
-                 onHide={() => this.closeDialog()} modal >
+                    onHide={() => this.closeDialog()} modal >
                     <div style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-around'}}>
-                    <img src={selectedPrd.imgurl} 
-                        onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'}
-                         alt={selectedPrd.name} style={{width:260}} />
+                    <img src={selectedPrd.image} 
+                          onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'}
+                         alt={selectedPrd.title} style={{width:220}} />
                         <div>
-                            <div style={{fontSize:22}}>{selectedPrd.name}</div>
+                            <div style={{fontSize:22}}>{selectedPrd.title}</div>
                             <div style={{fontSize:20,marginTop:12,marginBottom:16}}>$ {selectedPrd.price}</div>
                             <Button label="See Products details" className="p-button-raised" 
                                 onClick={()=>this.goToProductDetailPage()}
