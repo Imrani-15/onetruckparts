@@ -16,12 +16,14 @@
     display: grid;
     align-items: center;
     justify-content: center;
+    width: 100%;
 }
 
 .product_image{
     height: 262px;
     width: calc(100% - 4px);
     object-fit: contain;
+    align-self: center;
 }
 
 .product_footer{
