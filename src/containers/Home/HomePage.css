@@ -22,9 +22,9 @@
 
 .carousel-featured-products .product-item .product-item-content {
     border-radius: 3px;
-    margin: .3rem;
+    margin: .1rem;
     text-align: center;
-    height: 240px;
+    height: 220px;
     cursor: pointer;
     display: flex;
     justify-content: center;

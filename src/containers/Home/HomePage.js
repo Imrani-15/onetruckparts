@@ -1,13 +1,21 @@
 import React ,{Fragment} from 'react';
 
+import {connect} from "react-redux";
 import { Carousel } from 'primereact/carousel';
 import { Dialog } from 'primereact/dialog';
 import { Button } from 'primereact/button';
-import Slider from '../components/Slider';
-import serviceCall from '../utils/Services';
 import { Skeleton } from 'primereact/skeleton';
-import {PRODUCT_BASE_URL} from '../utils/Constants';
-import './styles/HomePage.css'
+
+
+import Slider from '../../components/Slider';
+import serviceCall from '../../utils/Services';
+
+import {PRODUCT_BASE_URL} from '../../utils/Constants';
+
+
+import { appStore } from '../../App';
+
+import './HomePage.css'
 
 class HomePage extends React.Component {
   
@@ -22,14 +30,7 @@ class HomePage extends React.Component {
             selectedPrd:{},
             showFeaturedProducts:true
         }
-        Carousel.changePageOnTouch = (e,diff) => {
-            if (diff < 0) {
-                this.navForward(e);
-            }
-            else {
-                this.navBackward(e);
-            }
-        }
+        
     }
 
     componentWillMount(){
@@ -37,9 +38,14 @@ class HomePage extends React.Component {
         this.getProductsByCategory();
     }
 
+    componentDidMount(){
+        if(Object.keys(this.props.userdata).length === 0 && !this.props.userdata.cartcount){
+            this.props.setUserData({cartcount:0,orderTotal:0})
+        } 
+    }
+
 
     getProductsByCategory = () => {
-
         let restUrl = `${PRODUCT_BASE_URL}prod/home`
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
@@ -138,5 +144,17 @@ class HomePage extends React.Component {
 
 }
 
+function mapStateToProps(state) {
+    return {
+       userdata : state.userData
+    }
+}
+function mapDispatchToProps(dispatch){
+    return {
+        setUserData: obj =>{
+            dispatch({ type: "SET_APP_DATA", data: obj });
+          }
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(HomePage);
 
-export default HomePage;

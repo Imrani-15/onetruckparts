@@ -1,17 +1,19 @@
 import React, { Fragment } from 'react';
 
+import {connect} from "react-redux";
+
 import { DataTable } from 'primereact/datatable';
 import { Divider } from 'primereact/divider';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
-import {showToastMessage} from '../utils/Utils';
-import serviceCall from '../utils/Services';
-import { appTheme, PRODUCT_BASE_URL , cartProducts} from '../utils/Constants';
+import {showToastMessage} from '../../utils/Utils';
+import serviceCall from '../../utils/Services';
+import { appTheme, PRODUCT_BASE_URL , cartProducts} from '../../utils/Constants';
 
-import  ImageComponent from '../components/ImageComponent';
+import  ImageComponent from '../../components/ImageComponent';
 
-import './styles/CartPage.css';
+import './CartPage.css';
 
 class CartPage extends React.Component { 
     constructor(props) {
@@ -33,7 +35,7 @@ class CartPage extends React.Component {
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
                 if (!res.error) {
-                    console.log("getCartProducts", res)
+                    this.props.setUserData({cartcount:res.data.cart.length,orderTotal:res.data.ordertotal})
                     this.setState({ cartList: res.data.cart, orderTotal: res.data.ordertotal, cartLoader:false })
                 } else {
 
@@ -74,7 +76,8 @@ class CartPage extends React.Component {
             .then((res) => {
                 if (!res.error) {
                     showToastMessage(this.toastRef,'error', '', `Product "${rowData.title}" deleted from cart`);
-                    this.setState({cartList: res.data.cart, orderTotal: res.data.ordertotal,cartLoader:false})
+                    this.setState({cartList: res.data.cart, orderTotal: res.data.ordertotal,cartLoader:false});
+                    this.props.setUserData({cartcount:res.data.cart.length,orderTotal:res.data.ordertotal})
                 } else {
                     this.setState({cartLoader:false})
                 }
@@ -90,7 +93,7 @@ class CartPage extends React.Component {
         const {cartList,orderTotal, cartLoader} = this.state;
         const imageBodyTemplate = (rowData) => {
             return <img src={`${rowData.image}`} 
-                    onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} 
+                    onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'} 
                     alt={rowData.image} style={{height:80}} />;
         }
         return(
@@ -187,4 +190,18 @@ class CartPage extends React.Component {
 
 }
 
-export default CartPage;
+
+function mapStateToProps(state) {
+    return {
+       
+    }
+}
+function mapDispatchToProps(dispatch){
+    return {
+        setUserData: obj =>{
+            dispatch({ type: "SET_APP_DATA", data: obj });
+          }
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(CartPage);
+

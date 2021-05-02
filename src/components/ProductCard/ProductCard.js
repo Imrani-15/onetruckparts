@@ -1,25 +1,21 @@
 import React from "react";
 import { Skeleton } from 'primereact/skeleton';
-
-import dummyImage from '../../assets/dummy.jpg'
-
-import {isNotEmpty} from '../../utils/Utils';
-
+import { Tooltip } from 'primereact/tooltip';
 import { Button } from 'primereact/button';
+import OneButton from '../OneButton';
+
 import './ProductCard.css'
 import { appTheme } from "../../utils/Constants";
 
 
-const ProductCard = ({ product, openProductDetail, addToCart }) => {
+const ProductCard = ({ product, openProductDetail, addToCart, saveLater }) => {
 
   return (
         <div className="product_main">
            <div className="product_header" onClick={() => openProductDetail(product)}>
-                {(isNotEmpty) ?
                 <img src={product.image}  className="product_image" 
                 onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'}
-                /> :
-                <img src={dummyImage} className="product_image" /> }
+                /> 
            </div>
            <div className="product_footer">
                <div style={{height:80}}>
@@ -36,20 +32,29 @@ const ProductCard = ({ product, openProductDetail, addToCart }) => {
                 <div style={{fontSize:12,color:appTheme.dark1}}>
                     Part Number: {product.partnumber}
                 </div>
-                <div style={{display:'flex',flexDirection:'row',marginTop:8}}>
+                <div style={{display:'flex',flexDirection:'row',marginTop:8, justifyContent:'space-between',alignItems:'center'}}>
                     <div style={{
                         fontSize:18,
                         fontWeight:'700'
                     }}>
                         ${product.price}
                     </div>
+                    <Button icon="pi pi-bookmark" className="p-button-rounded p-button-sm"  
+                    tooltip="Save to later"
+                    tooltipOptions={{position: 'bottom'}}
+                    onClick={()=> saveLater(product)}
+                    style={{backgroundColor:appTheme.primaryColor,
+                        borderColor:appTheme.primaryColor}}/>
                 </div>
-                <Button  
-                    label="Add to Cart" 
-                    className="p-button-raised p-button-rounded p-button-warning" 
-                    style={{width:'100%',marginTop:22}}
-                    onClick={() => addToCart(product)}
-                    />
+                <OneButton 
+                    onClick={() => addToCart(product)} 
+                    buttonLabel={"Add to cart"}
+                    btnShape="round"
+                    btnSize="large"
+                    buttonStyle={{fontSize:16,marginTop:22,
+                            backgroundColor:appTheme.logoTextColor,
+                            borderColor:appTheme.logoTextColor}}
+                    /> 
            </div>
            
 

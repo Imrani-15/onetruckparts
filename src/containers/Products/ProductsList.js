@@ -1,17 +1,19 @@
 import React, { Fragment } from 'react';
 
-//import { Empty } from 'antd';
+import { message } from 'antd';
 import { Divider } from 'primereact/divider';
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
-import serviceCall from '../utils/Services';
-import { appTheme, PRODUCT_BASE_URL } from '../utils/Constants';
-import {showToastMessage} from '../utils/Utils';
+import serviceCall from '../../utils/Services';
+import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
+import {isNotEmpty, showToastMessage} from '../../utils/Utils';
 import { connect } from "react-redux";
 
-import './styles/ProductList.css';
-import ProductCard from '../components/ProductCard/ProductCard';
-import AppSpinner from '../components/AppSpinner';
+
+import ProductCard from '../../components/ProductCard/ProductCard';
+import AppSpinner from '../../components/AppSpinner';
+
+import './ProductList.css';
 
 class ProductsList extends React.Component {
     constructor(props) {
@@ -23,7 +25,7 @@ class ProductsList extends React.Component {
             displayItems: [15, 30, 45],
             showLoader:true,
             cartLoader:false,
-            fromBrands: this.props.location.state.fromBrands ? this.props.location.state.fromBrands : false,
+            fromBrands: false,
             categories:[],
             selectedCat:false,
             selectedCategory:{}
@@ -35,12 +37,15 @@ class ProductsList extends React.Component {
     componentWillMount() {
         this.getProductsList();
         this.getCategory();
-        this.updateCategory = true
+        this.updateCategory = true;
+        let brand = new URLSearchParams(this.props.location.search).get("brands");
+        let checkBrand = isNotEmpty(brand) ? brand : false;
+        this.setState({fromBrands:checkBrand})
     }
 
 
     componentDidUpdate(prevProps){
-        if(prevProps.location.state.catName !== this.props.location.state.catName){
+        if(prevProps.match.params.category.replace(":", "") !== this.props.match.params.category.replace(":", "")){
             this.setState({showLoader:true,pageNum:1})
             this.getProductsList();
             
@@ -61,7 +66,7 @@ class ProductsList extends React.Component {
 
     getProductsList = () => {
         const { pageNum, pageSize, fromBrands, selectedCat, selectedCategory } = this.state;
-        let category =  this.props.location.state.catName;
+        let category =  this.props.match.params.category.replace(":", "");
         let filter =  (fromBrands) ? (selectedCat) ? 
                         `&brand=${encodeURIComponent(category)}&category=${selectedCategory.display_name}` : `&brand=${encodeURIComponent(category)}` : `&category=${category}`
         let restUrl =   encodeURI(`${PRODUCT_BASE_URL}prod?db=mainDB&page=${pageNum}&limit=${pageSize}${filter}`) ;
@@ -120,7 +125,7 @@ class ProductsList extends React.Component {
 
 
     openProductDetail=(selectedProduct)=>{
-       this.props.history.push('/productdetails/osku:'+ selectedProduct.osku, {selectedProduct:selectedProduct})
+       this.props.history.push('/productdetails/osku:'+ selectedProduct.osku)
     }
 
     addToCart=(product)=>{
@@ -131,6 +136,8 @@ class ProductsList extends React.Component {
                         if (!res.error) {
                             showToastMessage(this.toastRef,'success', '', `Product "${product.title}" added to cart`);
                             this.setState({cartLoader:false})
+                            console.log("updateCartCount", res)
+                            this.props.setUserData({ cartcount: res.data.cart.length, orderTotal: res.data.ordertotal });
                         } else {
                             this.setState({cartLoader:false})
                         }
@@ -138,16 +145,39 @@ class ProductsList extends React.Component {
                     .catch((error) => {
                         this.setState({cartLoader:false})
                     })
-        })
+        })  
+    }
+
+    saveLater=(product)=>{
+        if(this.props.loginData && this.props.loginData.emailId){
+            let restUrl = `${PRODUCT_BASE_URL}account/saveforlater`;
+            let inpobj = {
+                "emailId": this.props.loginData.emailId,
+                "osku": product.osku
+            }
+            serviceCall(inpobj, restUrl, 'POST')
+                .then((res) => {
+                    if (!res.error) {
+                        message.success(`Product "${product.title}" added as save for later`);
+                        this.setState({cartLoader:false})
+                    } else {
+                        this.setState({cartLoader:false})
+                    }
+                })
+                .catch((error) => {
+                    this.setState({cartLoader:false})
+                })
+        }else{
+            showToastMessage(this.toastRef,'error', 'Error Message', `Please login to save for later`);
+        }
         
-      
+
     }
 
 
 
     render() {
         const { pageSize, pageNum, displayItems, productsList, showLoader, cartLoader, fromBrands, categories, selectedCat } = this.state;
-   
         return (
             <Fragment>
                  <Toast ref={this.toastRef} />
@@ -212,6 +242,7 @@ class ProductsList extends React.Component {
                                     product={product}
                                     openProductDetail={this.openProductDetail.bind(this)}
                                     addToCart={this.addToCart.bind(this)}
+                                    saveLater={this.saveLater.bind(this)}
                                 />
                             )
                             )}
@@ -248,12 +279,16 @@ class ProductsList extends React.Component {
 
 function mapStateToProps(state) {
     return {
+        userdata: state.userData,
+        loginData: state.userLoginData,
         getCategories:state.getCategories
     }
  }
  function mapDispatchToProps(dispatch) {
     return {
-     
+        setUserData: obj =>{
+            dispatch({ type: "SET_APP_DATA", data: obj });
+          }
     }
  }
  

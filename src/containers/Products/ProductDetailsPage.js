@@ -6,15 +6,18 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 import { Skeleton } from 'primereact/skeleton';
 
-import serviceCall from '../utils/Services';
-import dummyImage from '../assets/dummy.jpg';
-import AppSpinner from '../components/AppSpinner';
+import serviceCall from '../../utils/Services';
+import dummyImage from '../../assets/dummy.jpg';
 
-import { appTheme , PRODUCT_BASE_URL} from '../utils/Constants';
+import OneButton from '../../components/OneButton';
+import AppSpinner from '../../components/AppSpinner';
 
-import { isNotEmpty, showToastMessage } from '../utils/Utils';
+import { appTheme , PRODUCT_BASE_URL} from '../../utils/Constants';
 
-import './styles/ProductDetailsPage.css'
+import { isNotEmpty, showToastMessage } from '../../utils/Utils';
+
+import './ProductDetailsPage.css';
+
 class ProductDetailsPage extends React.Component {
     constructor(props) {
         super(props);
@@ -50,8 +53,15 @@ class ProductDetailsPage extends React.Component {
         this.getProductDetails();
     }
 
+    componentDidUpdate(prevProps){
+        if(prevProps.match.params.osku.replace(":", "") !== this.props.match.params.osku.replace(":", "")){
+            this.setState({showLoader:true})
+            this.getProductDetails();  
+        }
+    }
+
     getProductDetails = () => {
-        let SKU =  this.props.location.state.selectedProduct.osku;
+        let SKU =  this.props.match.params.osku.replace(":", "");
         let restUrl = `${PRODUCT_BASE_URL}prod/details?osku=${SKU}`
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
@@ -175,17 +185,22 @@ class ProductDetailsPage extends React.Component {
                                 onChange={(e) => this.setState({ selectedQuantity: e.value })}
                                 optionLabel="name" className="p-dropdown-sm p-ml-4" />
                         </div>
-                        <Button
-                            label="Add to Cart"
-                            className="p-button-raised p-button-rounded p-button-warning"
-                            style={{ width: '100%', marginTop: 26 }}
+                        <OneButton 
                             onClick={() => this.addToCart(productDetails)}
-                        />
-                        <Button
-                            label="Buy Now"
-                            className="p-button-raised p-button-rounded p-button-warning"
-                            style={{ width: '100%', marginTop: 26, backgroundColor: appTheme.logoTextColor }}
-                        />
+                            buttonLabel={"Add to cart"}
+                            btnShape="round"
+                            btnSize="large"
+                            buttonStyle={{fontSize:16,marginTop:26,
+                                    backgroundColor:appTheme.logoTextColor,
+                                    borderColor:appTheme.logoTextColor}}
+                        /> 
+                         <OneButton 
+                            onClick={() => this.addToCart(productDetails)}
+                            buttonLabel={"Save Later"}
+                            btnShape="round"
+                            btnSize="large"
+                            buttonStyle={{fontSize:16,marginTop:26}}
+                        /> 
                     </div>
                 </div>
                 }

@@ -1,1 +1,11 @@
+export const SET_APP_DATA = 'SET_APP_DATA';
+export const REMOVE_APP_DATA = 'REMOVE_APP_DATA';
+export const SET_LOGIN_DATA= 'SET_LOGIN_DATA';
+export const REMOVE_LOGIN_DATA = 'REMOVE_LOGIN_DATA';
 export const GET_CAT = 'GET_CAT';
+
+export const SET_CART_COUNT = 'SET_CART_COUNT';
+export const GET_CART_LIST = 'GET_CART_LIST';
+
+
+export const USER_SELECTED_LOCATION = 'USER_SELECTED_LOCATION';

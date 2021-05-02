@@ -1,5 +1,5 @@
 .product_main{
-    width: calc(33.33% - 16px);
+    width: calc(33.33% - 16px) !important;
     margin: 6px;
     display: block;
     border-bottom: 1px solid #ccc;
@@ -27,6 +27,7 @@
 .product_footer{
     padding: 12px;
     margin-top: 14px;
+    width: 100%;
 }
 
 .product_title{

@@ -1,0 +1,26 @@
+.login-body{
+    display: flex;
+    justify-content: center;
+}
+.login-main{
+    width: 400px;
+    background: white;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    display: grid;
+    margin-top: 6%;
+}
+
+.p-password input {
+    width: 20vw;
+    padding: 0.4rem 0.75rem;
+}
+
+.resetpasswordText{
+    text-align: right;
+    color: #E87D0D;
+    cursor: pointer;
+}
+
+

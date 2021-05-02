@@ -3,9 +3,10 @@ import React, { Fragment } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { Skeleton } from 'primereact/skeleton';
 import { Button } from 'primereact/button';
-import serviceCall from '../utils/Services';
-import { PRODUCT_BASE_URL } from '../utils/Constants';
-import './styles/HomePage.css'
+import serviceCall from '../../utils/Services';
+import { PRODUCT_BASE_URL } from '../../utils/Constants';
+
+import '../Home/HomePage.css'
 
 class BrandsPage extends React.Component {
 
@@ -96,7 +97,7 @@ class BrandsPage extends React.Component {
     }
 
     goToProductPage(brand){
-        this.props.history.push('/productslist/type:'+ brand.brand, {catName:brand.brand, fromBrands:true})
+        this.props.history.push('/products/category:'+ brand.brand+'?brands=true', {catName:brand.brand, fromBrands:true})
     }
 
     onSearchInputChange = (e) => {

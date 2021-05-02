@@ -8,10 +8,10 @@ import { Timeline } from 'antd';
 import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
 import { ClockCircleOutlined, CreditCardOutlined } from '@ant-design/icons';
-import {cartProducts} from '../utils/Constants';
-import  ImageComponent from '../components/ImageComponent';
+import {cartProducts} from '../../utils/Constants';
+import  ImageComponent from '../../components/ImageComponent';
 
-import './styles/CheckOutPage.css';
+import './CheckOutPage.css';
 
 class CheckOutPage extends React.Component { 
     constructor(props) {
