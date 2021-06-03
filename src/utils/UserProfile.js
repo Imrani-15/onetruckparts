@@ -36,14 +36,14 @@ class userProfile {
 
     static setUserObj(inpobj){
         this.userobj = inpobj;
-        window.localStorage.setItem('sessdata', JSON.stringify(inpobj));
+        window.localStorage.setItem('userdata', JSON.stringify(inpobj));
     }
 
     static getUserObj(){
-        if(this.userobj && this.userobj.empid){
+        if(this.userobj && this.userobj.emailId){
             return this.userobj;
         }else {
-            let userobj = window.localStorage.getItem('sessdata');
+            let userobj = window.localStorage.getItem('userdata');
             if(userobj){
                 userobj = JSON.parse(userobj)
             }
@@ -52,49 +52,22 @@ class userProfile {
         }
     }
 
-    // static setnavObj(inpobj){
-    //     this.navobj = inpobj;
-    //     window.localStorage.setItem('Screenbar', JSON.stringify(inpobj));
-    // }
-
-    // static getnavObj(){
-    //     if(this.navobj && this.navobj.empid){
-    //         return this.navobj;
-    //     }else {
-    //         let navobj = window.localStorage.getItem('Screenbar');
-    //         if(navobj){
-    //             navobj = JSON.parse(navobj)
-    //         }
-    //         this.navobj = navobj || null;
-    //         return navobj;
-    //     }
-    // }
-
-     static getScrIcon (locPath){
-        let navItems = this.userobj.roleoptions
-      
-             
-            for(let i=0; i<navItems.length;i++){
-                 
-                if(navItems[i].items && navItems[i].items.length > 0){
-                  
-                  for (let j=0;j<navItems[i].items.length;j++){
-                   
-                   if (locPath == navItems[i].items[j].navpath) {
-                     return navItems[i].items[j]['icon'];
-                     
-                   }
-                   
-                  }
-                  
-                }else {
-                 if(navItems[i]['navpath'] == locPath)
-                 return navItems[i]['icon'];
-                 
-                }
-             }
-    
+    static setUserToken(token){
+        window.localStorage.setItem('token', token);
     }
+
+    static getUserToken(){
+        let accessToken = window.localStorage.getItem('token');
+        if(accessToken){
+            return accessToken;
+        }else{
+            return null
+        }
+    }
+
+ 
+
+  
 
 }
 

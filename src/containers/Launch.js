@@ -20,9 +20,15 @@ import  Home from './Home/HomePage';
 import Brands from './Brands/BrandsPage';
 import Products from './Products/ProductsList';
 import ProductDetails from './Products/ProductDetailsPage';
+import SerchProducts from './Products/SearchProductsList';
 import Cart from './Cart/CartPage';
 import SaveLater from './Cart/SaveLater';
+import Orders from './Orders/Orders';
 import CheckOut from './CheckOut/CheckOutPage';
+
+import HomeSettings from './Settings/HomeSettings';
+import PageNotFound from './Settings/PageNotFound';
+
 
 
 
@@ -47,10 +53,14 @@ const MainRoute = withRouter(({location}) =>{
 
                     <Route path="/brands" component={Brands} />
                     <Route path="/products/category:category" component={Products} />
+                    <Route path="/search/prd:val" component={SerchProducts} />
                     <Route path="/productdetails/osku:osku"  component={ProductDetails}/>
                     <Route path="/cart" component={Cart} />
                     <Route path="/saveforlater" component={SaveLater}/>
                     <Route path="/checkout" component={CheckOut} />
+                    <Route path="/my-orders" component={Orders} />
+                    <Route path="/settings" component={HomeSettings} />
+                    <Route component={PageNotFound} />
                 </Switch>
                 {location.pathname !== "/login" && location.pathname !== "/signup" &&
                     <Footer/>

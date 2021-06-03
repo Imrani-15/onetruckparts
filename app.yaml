@@ -1,14 +1,34 @@
-# [START runtime]
-runtime: nodejs14
-env: standard
-service: onetruckpart
-# [END runtime]
+# # [START runtime]
+# runtime: nodejs14
+# env: standard
+# service: onetruckpart
+# # [END runtime]
 
-# [START handlers]
+# # [START handlers]
+# handlers:
+#   - url: /
+#     static_files: build/index.html
+#     upload: build/index.html
+#   - url: /
+#     static_dir: build
+#   # [END handlers]
+
+
+env: standard
+runtime: nodejs14
+service: onetruckpart
+#service : onetruck
 handlers:
-  - url: /
+  - url: /static
+    static_dir: build/static
+  - url: /(.*\.(json|ico|js))$
+    static_files: build/\1
+    upload: build/.*\.(json|ico|js)$
+  - url: .*
     static_files: build/index.html
     upload: build/index.html
-  - url: /
-    static_dir: build
-  # [END handlers]
+    
+  - url: /.*
+    secure: always
+    script: auto
+    redirect_http_response_code: 301

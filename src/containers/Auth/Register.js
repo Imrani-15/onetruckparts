@@ -21,6 +21,7 @@ class Register extends React.Component {
         super(props);
         this.state = {
             loading:false,
+            formInvalid: false,
             emailId: '',
             password: '',
             confirmPassword:'',
@@ -66,17 +67,20 @@ class Register extends React.Component {
 
         this.setState({
             isError,
-            [name]: value
+            [name]: value,
+            formInvalid:false
         })
     }
 
     submitRegister = () => {
         const { emailId, password, confirmPassword } = this.state;
+        this.messageRef.current.clear();
         this.setState({loading:true})
         if (formValidation(this.state.isError, { emailId, password, confirmPassword })) {
+            this.setState({ formInvalid: false })
             if (password !== confirmPassword) {
                 this.setState({loading:false})
-                this.messageRef.current.show({ severity: 'error', summary: '', detail: "The password don't match.", sticky: true })
+                this.messageRef.current.show({ severity: 'error', summary: '', detail: "The password don't match.", sticky: false })
             } else {
                 let inpobj = {
                     "emailId": emailId,
@@ -90,20 +94,20 @@ class Register extends React.Component {
                                 this.showTost('success', 'Success Message', res.data.message);
                                   this.props.history.replace('/login');
                             } else {
-                                this.showTost('error', 'Error Message', res.data.message);
+                                this.messageRef.current.show({ severity: 'error', summary: '', detail: res.data.message, sticky: false })
                             }
                         }) 
                     })
                     .catch((error) => {
                         this.setState({loading:false},()=>{
-                            this.showTost('error', 'Error Message', 'Opps, Something went wrong, Try again');
+                            this.messageRef.current.show({ severity: 'error', summary: '', detail: 'Opps, Something went wrong, Try again', sticky: false })
                         })
                     })
             }
            
         } else {
-            this.setState({loading:false})
-            this.showTost('error', 'Error Message', 'Please enter all the details.');
+            this.setState({loading:false,formInvalid:true})
+            this.messageRef.current.show({ severity: 'error', summary: '', detail: 'Please enter all required fields.', sticky: false })
         }
 
     }
@@ -114,7 +118,7 @@ class Register extends React.Component {
 
 
     render() {
-        const {loading, userName, emailId, mobileNumber, password, confirmPassword, isError } = this.state;
+        const {loading, userName, emailId, formInvalid, password, confirmPassword, isError } = this.state;
         return (
             <div className="login-body">
                 <Toast ref={this.toastRef} />
@@ -122,20 +126,20 @@ class Register extends React.Component {
                 {loading && <AppSpinner /> }
                 <div className="login-main">
                     <h1 style={{ textAlign: 'left',fontWeight:'400' }}>Create your account</h1>
-                    <Messages ref={this.messageRef} />
+                    <Messages ref={this.messageRef} style={{width:300}} />
                     <div className="p-field">
-                        <label htmlFor="email" className="p-d-block">Email</label>
-                        <InputText id="email" value={emailId} name="emailId"
-                            className={(isError.emailId.length > 0) ? "p-invalid p-inputtext-sm p-d-block" : "p-inputtext-sm p-d-block"}
+                        <label htmlFor="email" className="p-d-block"><span style={{ color: formInvalid ? 'red' : '' }}>* </span>Email</label>
+                        <InputText id="email" value={emailId} name="emailId" required
+                            className={(isError.emailId.length > 0 || formInvalid) ? "p-invalid p-inputtext-sm p-d-block" : "p-inputtext-sm p-d-block"}
                             onChange={this.handleChange} style={{ width: 300 }} />
                         {isError.emailId.length > 0 && (
                             <small id="email-help" className="p-error p-d-block">{isError.emailId}</small>
                         )}
                     </div>
                     <div className="p-field">
-                        <label htmlFor="password" className="p-d-block">Password</label>
-                        <Password id="password" value={password} name="password"
-                            className={(isError.password.length > 0) ? "p-invalid p-password p-password-sm" : "p-password p-password-sm"}
+                        <label htmlFor="password" className="p-d-block"><span style={{ color: formInvalid ? 'red' : '' }}>* </span>Password</label>
+                        <Password id="password" value={password} name="password" required
+                            className={(isError.password.length > 0 || formInvalid) ? "p-invalid p-password p-password-sm" : "p-password p-password-sm"}
                             onChange={this.handleChange} style={{ width: 300 }}
                             toggleMask />
                         {isError.password.length > 0 && (
@@ -143,9 +147,9 @@ class Register extends React.Component {
                         )}
                     </div>
                     <div className="p-field">
-                        <label htmlFor="confirmPassword" className="p-d-block">Confirm Password</label>
-                        <Password id="confirmPassword" value={confirmPassword} name="confirmPassword"
-                            className={(isError.confirmPassword.length > 0) ? "p-invalid p-password p-password-sm" : "p-password p-password-sm"}
+                        <label htmlFor="confirmPassword" className="p-d-block"><span style={{ color: formInvalid ? 'red' : '' }}>* </span>Confirm Password</label>
+                        <Password id="confirmPassword" value={confirmPassword} name="confirmPassword" required
+                            className={(isError.confirmPassword.length > 0 || formInvalid) ? "p-invalid p-password p-password-sm" : "p-password p-password-sm"}
                             onChange={this.handleChange} style={{ width: 300 }}
                             toggleMask  feedback={false}/>
                         {isError.confirmPassword.length > 0 && (

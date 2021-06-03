@@ -2,7 +2,9 @@ import React,{Component,Fragment} from 'react';
 import {connect} from "react-redux";
 import { Link } from 'react-router-dom';
 
-import {Empty, Input } from 'antd';
+import {Empty, Input, AutoComplete  } from 'antd';
+
+import { SearchOutlined } from '@ant-design/icons';
 import { ScrollPanel } from 'primereact/scrollpanel';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import serviceCall from '../../utils/Services';
@@ -18,7 +20,7 @@ class Search extends Component {
         this.state = {
             showSpinner:true,
             searchData:[],
-            getAllProducts:[]
+            searchText:'',
         }
         this.overLayRef = React.createRef();
     }
@@ -32,37 +34,29 @@ class Search extends Component {
     }
 
 
-    onSearchChange = (value,e) => {
-        if (value && value.length > 2){
-          value =  this.state.search;
-          this.getSearchProducts(value,e);
-        } else {
-          this.setState({ searchData: [],showSpinner:true })
-        }
-      }
-
+  
     getSearchProducts=(value,e)=>{
-      this.overLayRef.current.toggle(e)
-      let restUrl = `${PRODUCT_BASE_URL}globalsearch/${value}?page=1`
-      serviceCall({}, restUrl, 'GET')
-          .then((res) => {
-              if (!res.error) {
-            
-                  this.setState({ searchData: res.data.data,showFeaturedProducts:false })
-              } else {
+      this.setState({searchText:value},()=>{
+        if(this.state.searchText.length >= 2){
+          let restUrl = `${PRODUCT_BASE_URL}globalsearch/${value}?page=1`
+          serviceCall({}, restUrl, 'GET')
+              .then((res) => {
+                  if (!res.error) {
+                      this.setState({ searchData: res.data.data,showFeaturedProducts:false })
+                  } else {
+    
+                  }
+              })
+              .catch((error) => {
+              })
+        }
 
-              }
-          })
-          .catch((error) => {
-          })
+      })
+    
     }
 
 
 
-    hideOverlay=()=>{
-      this.overLayRef.current.hide();
-      this.setState({ searchData:[]});
-    }
 
       
 
@@ -72,30 +66,16 @@ class Search extends Component {
     
    
     render(){
-        const {searchData,showSpinner} = this.state;
-        return(
-            <Fragment>
-              <Input.Search 
-                 placeholder="Search for Products"  
-                style={{ width: '98%' }} 
-                size="large"
-                enterButton
-              //  onChange={(e)=> this.onSearchChange(e.target.value,e)}
-                onSearch={(value,e)=> this.onSearchProduct(value,e)}
-                />
-                <OverlayPanel ref={this.overLayRef}
-                  className="p-overlaypanel-search"
-                  showCloseIcon={false}>
-                    <div>
-                    {searchData.length ===0 ?
-                       <Empty /> :
-                       <ScrollPanel style={{width: '100%', height: '260px'}}>
-                         {searchData.map((search,index)=>(
-                              <Link 
+        const {searchData,searchText} = this.state;
+        const options = searchData.map((search,index)=>{
+                return {
+                  value: `${search.title}`,
+                  label:(
+                        <Link 
                                 to={"/productdetails/osku:"+ search.osku}
                                 className="search-list" 
                                 key={index}
-                                onClick={(search)=> this.hideOverlay(search)}>
+                                >
                                     <img src={search.image} 
                                      onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'}
                                     alt={search.title} style={{width:60,marginRight:18}} />
@@ -104,20 +84,29 @@ class Search extends Component {
                                       <div style={{fontSize:14,fontWeight:'400', color:appTheme.dark5}}>{search.osku}</div>
                                   </div>
                            </Link>
-                         ))}
-                      </ScrollPanel>
-                    }
-
-                    </div>
-
-             </OverlayPanel>
-              
-                  
+                  )
+                }
+        })
+        return(
+            <Fragment>
+                 <AutoComplete
+                    dropdownMatchSelectWidth={250}
+                    style={{
+                      width: '100%'
+                    }}
+                    options={options}
+                    onSearch={(value,e)=> this.onSearchProduct(value,e)}
+                  >
+                    <Input size="large"  placeholder="Search for Products" className="search-icon"    addonAfter={
+                     <Link
+                     to={"/search/prd:"+ searchText}
+                     onClick={()=> this.setState({searchData:[]})}
+                     >
+                        <SearchOutlined style={{fontSize:20, color:'#fff',alignSelf:'center'}}/>
+                     </Link>
+                    }  />
+                  </AutoComplete>
             </Fragment>
-          
-                
-       
-
         )
     }
 }

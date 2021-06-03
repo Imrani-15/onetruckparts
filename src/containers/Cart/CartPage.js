@@ -7,6 +7,9 @@ import { Divider } from 'primereact/divider';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
+
+import emptyCart from '../../assets/emptycart.jpg';
+import OneButton from '../../components/OneButton';
 import {showToastMessage} from '../../utils/Utils';
 import serviceCall from '../../utils/Services';
 import { appTheme, PRODUCT_BASE_URL , cartProducts} from '../../utils/Constants';
@@ -49,14 +52,15 @@ class CartPage extends React.Component {
 
     updateProductFromCart(product,type){
         this.setState({cartLoader:true},()=>{
-            let restUrl = (type === 'ADD') ? `${PRODUCT_BASE_URL}cart/add/${product.osku}` : `${PRODUCT_BASE_URL}cart/remove/${product.osku}`;
+            let restUrl = (type === 'ADD') ? `${PRODUCT_BASE_URL}cart/add/${product.osku}/${parseInt(product.quantity)+1}` : `${PRODUCT_BASE_URL}cart/remove/${product.osku}`;
                 serviceCall({}, restUrl, 'GET')
                     .then((res) => {
-                        if (!res.error) {
+                        if (!res.data.error) {
                             showToastMessage(this.toastRef,'success', '', (type === 'ADD') ? `Product "${product.title}" added to cart` : `Product "${product.title}" removed from cart` );
                             this.setState({cartLoader:false})
                             this.getCartProducts();
                         } else {
+                            showToastMessage(this.toastRef,'error', '', res.data.message );
                             this.setState({cartLoader:false})
                         }
                     })
@@ -106,7 +110,12 @@ class CartPage extends React.Component {
                         <div className="p-grid p-mt-4">
                             <div className="p-col-8">
                             <DataTable 
-                                emptyMessage="No Items in cart."
+                                emptyMessage={
+                                    <div style={{display:'grid', justifyContent:'center'}}>
+                                        <img src={emptyCart} alt="cartEmpty" style={{height:160,alignSelf:'center'}} />
+                                        <h3 style={{textAlign:'center', color:appTheme.logoTextColor,fontWeight: '800',}}>No Items in cart</h3>
+                                    </div>
+                                }
                                 loading={cartLoader}
                                 value={cartList}>
                                 <Column field="category" header="Category" />
@@ -120,7 +129,7 @@ class CartPage extends React.Component {
                                                   <Button icon="pi pi-minus" 
                                                      onClick={()=>this.updateProductFromCart(rowData,'SUB')}
                                                      className="p-button-outlined p-button-sm p-button-secondary" />
-                                                  <div style={{width:'25%',display:'flex',justifyContent:'center',alignItems:'center',fontSize:16}}>{rowData.quantity}</div>
+                                                  <div style={{width:'26%',display:'flex',justifyContent:'center',alignItems:'center',fontSize:16}}>{rowData.quantity}</div>
                                                   <Button icon="pi pi-plus" 
                                                     onClick={()=>this.updateProductFromCart(rowData,'ADD')}
                                                     className="p-button-outlined p-button-sm p-button-secondary" />
@@ -138,8 +147,8 @@ class CartPage extends React.Component {
                             <div className="p-col-1"></div>
                             <div className="p-col-3 p-shadow-3" style={{height:360,padding: 26}}>
                                 <div style={{ fontSize: 24, fontWeight: '600' }}>
-                                    Cart Details
-                                </div>
+                                   Order Summary
+                                 </div>
                                 <Divider />
                                 <div className="cartdetailsAlign">
                                     <div className="cartdetailsText">
@@ -147,22 +156,6 @@ class CartPage extends React.Component {
                                     </div>
                                     <div className="cartdetailsText">
                                         $ {orderTotal.toFixed(2)}
-                                    </div>
-                                </div>
-                                <div className="cartdetailsAlign">
-                                    <div className="cartdetailsText">
-                                        Shipping
-                                    </div>
-                                    <div className="cartdetailsText">
-                                        $ 20
-                                    </div>
-                                </div>
-                                <div className="cartdetailsAlign">
-                                    <div className="cartdetailsText">
-                                        Tax
-                                    </div>
-                                    <div className="cartdetailsText">
-                                        $ 2
                                     </div>
                                 </div>
                                 <Divider />
@@ -174,12 +167,14 @@ class CartPage extends React.Component {
                                         $ {orderTotal.toFixed(2)}
                                     </div>
                                 </div>
-                                <Button  
-                                    label="Proceed to checkout" 
-                                    className="p-button-raised p-button-rounded p-button-warning" 
-                                    style={{width:'100%',marginTop:16}}
+                                <OneButton 
                                     onClick={()=> this.props.history.push("/checkout")}
-                                />
+                                    buttonLabel={"Proceed to checkout"}
+                                    btnShape="round"
+                                    btnSize="large"
+                                    buttonStyle={{fontSize:16,marginTop:16,color:'#fff'}}
+                                    btnDisabled={cartList.length ===0}
+                                /> 
                             </div>
 
                         </div>

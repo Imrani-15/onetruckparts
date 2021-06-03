@@ -4,10 +4,26 @@ export const BASE_URL = 'http://localhost:8000/';
 
 export const PRODUCT_BASE_URL = 'https://customtemplateapis-dot-gentle-epoch-277301.uk.r.appspot.com/';
 
+export const userRoles = {
+    CUSTOMER : "customer",
+    ADMIN : "admin"
+}
+
+export const sectionTypes = {
+  SCROLL : "scroll",
+  GRID : "grid"
+}
+
+export const orderStatus = {
+  PENDING : "pending",
+  INPROGRESS : "inprogress"
+}
+
 export const appTheme = {
-    primaryColor:'#142977',
+
+    primaryColor:'#041E42',
     navBarColor: '#4781CA', 
-    secondaryColor:'#EB3875',
+    secondaryColor:'#142977',
     launchBgColor:'#361059',
     logoTextColor:'#FF891E',
     lightText: '#6c757d',
@@ -29,40 +45,26 @@ export const menuItems = [
     },
     {
       navOptionName: `My Orders`,
-      screenToNavigate: '/orders',
+      screenToNavigate: '/my-orders',
     },
-    {
-      navOptionName: `About Us`,
-      screenToNavigate: '/about',
-    },
-    {
-      navOptionThumb: 'help_outline',
-      navOptionName: `FAQ'S`,
-      screenToNavigate: '/faq',
-      callService:true,
-      type:'FAQ'
-    },
-    {
-      navOptionThumb: 'receipt',
-      navOptionName: `Terms & Conditions`,
-      screenToNavigate: '/terms',
-      callService:true,
-      type:'TERMS'
-    },
-    {
-      navOptionThumb: 'privacy_tip',
-      navOptionName: `Privacy & Policy`,
-      screenToNavigate: '/privacy',
-      callService:true,
-      type:'PPOLICY'
-    },
-    {
-      navOptionThumb: 'coronavirus',
-      navOptionName: `Covid Saftey measures`,
-      screenToNavigate: '/covid',
-      callService:true,
-      type:'COVID'
-    }
+    // {
+    //   navOptionName: `About Us`,
+    //   screenToNavigate: '/about',
+    // },
+    // {
+    //   navOptionThumb: 'receipt',
+    //   navOptionName: `Terms & Conditions`,
+    //   screenToNavigate: '/terms',
+    //   callService:true,
+    //   type:'TERMS'
+    // },
+    // {
+    //   navOptionThumb: 'privacy_tip',
+    //   navOptionName: `Privacy & Policy`,
+    //   screenToNavigate: '/privacy',
+    //   callService:true,
+    //   type:'PPOLICY'
+    // }
   ]
 
 

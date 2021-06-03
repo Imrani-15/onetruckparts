@@ -1,170 +1,172 @@
 import React, { Fragment } from 'react';
 
+import { Steps, Result } from 'antd';
+import { Toast } from 'primereact/toast';
 
-import { DataView } from 'primereact/dataview';
-import { Card } from 'primereact/card';
-import { ScrollPanel } from 'primereact/scrollpanel';
-import { Timeline } from 'antd';
-import { Button } from 'primereact/button';
-import { Divider } from 'primereact/divider';
-import { ClockCircleOutlined, CreditCardOutlined } from '@ant-design/icons';
-import {cartProducts} from '../../utils/Constants';
-import  ImageComponent from '../../components/ImageComponent';
+import OneButton from '../../components/OneButton';
+
+import Locations from './Locations';
+import Payment from './Payment';
+
+import userProfile from '../../utils/UserProfile';
+import serviceCall from '../../utils/Services';
+import { showToastMessage } from '../../utils/Utils';
+
+import { PRODUCT_BASE_URL, appTheme } from '../../utils/Constants';
+
 
 import './CheckOutPage.css';
 
-class CheckOutPage extends React.Component { 
+const { Step } = Steps;
+
+const steps = [
+    {
+        title: 'Select a delivery address',
+        content: 'First-content',
+    },
+    {
+        title: 'Payment',
+        content: 'Last-content',
+    },
+    {
+        title: 'Order Confirmation',
+        content: 'Last-content',
+    }
+];
+class CheckOutPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-           
+            current: 0,
+            selectedAddress: {}
+        }
+        this.toastRef = React.createRef();
+    }
+
+
+    selectDeliveryAddress(selectedAddress) {
+        this.setState({ selectedAddress })
+    }
+
+
+    onClickNext = () => {
+        const { current, selectedAddress } = this.state;
+        if (Object.keys(selectedAddress).length === 0) {
+            showToastMessage(this.toastRef, 'error', 'Address', "Please select delivery address");
+        } else if (current === 0 || current === 1) {
+            this.setState({ current: this.state.current + 1 })
         }
     }
 
+    submitOrder = () => {
+        let restUrl = `${PRODUCT_BASE_URL}cart/checkout`;
+        serviceCall({}, restUrl, 'POST')
+            .then((res) => {
+                this.setState({ loading: false }, () => {
+                    if (!res.data.error) {
+                        this.props.history.replace('/')
+                    } else {
 
-
-    render(){
-        return(
-            <Fragment>
-                 <div style={{ padding: 10,margin:'4%' }}>
-                    <div style={{ fontSize: 34, fontWeight: '600' }}>
-                        Checkout
-                    </div>
-                    <div className="p-grid p-mt-4">
-                        <div className="p-col-8">
-                        <Timeline>
-                            <Timeline.Item 
-                                dot={<ClockCircleOutlined style={{ fontSize: '20px' }} />}
-                                color="red">
-                                <h1>Shipping Address</h1>
-                                <div className="card-border p-shadow-3">
-                                    <div>
-                                        <div style={{fontSize:20,fontWeight: 'bold',}}>Rajesh Gudimetla</div>
-                                        <div style={{fontSize:18}}>Near Ramalayam</div>
-                                        <div style={{fontSize:18}}>Khammam, 505303</div>
-                                    </div>
-                                    <Button label="Change Shipping Address" style={{height:45}} className="p-button-outlined" /> 
-                                </div>
-                                </Timeline.Item>
-                            <Timeline.Item 
-                                color="green"
-                                dot={<CreditCardOutlined  style={{ fontSize: '20px' }}/>}
-                            >
-                             <h1>Payment Method</h1>
-                                <div className="card-border p-shadow-3">
-                                    <div>
-                                        <div style={{fontSize:20,fontWeight: 'bold',}}>Rajesh Gudimetla</div>
-                                        <div style={{fontSize:18}}>Near Ramalayam</div>
-                                        <div style={{fontSize:18}}>Khammam, 505303</div>
-                                    </div>
-                                    <Button label="Change Shipping Address" style={{height:45}} className="p-button-outlined" /> 
-                                </div>
-                            
-                            </Timeline.Item>
-                            <Timeline.Item>Technical testing 2015-09-01</Timeline.Item>
-                            <Timeline.Item>Network problems being solved 2015-09-01</Timeline.Item>
-                        </Timeline>
-                        </div>
-                        <div className="p-col-1"></div>
-                        <div className="p-col-3 p-shadow-3" style={{height:360,padding: 26}}>
-                            <div style={{ fontSize: 24, fontWeight: '600' }}>
-                                Cart Details
-                            </div>
-                            <Divider />
-                            <div className="cartdetailsAlign">
-                                <div className="cartdetailsText">
-                                    Sub Total
-                                </div>
-                                <div className="cartdetailsText">
-                                    $ 200
-                                </div>
-                            </div>
-                            <div className="cartdetailsAlign">
-                                <div className="cartdetailsText">
-                                    Shipping
-                                </div>
-                                <div className="cartdetailsText">
-                                    $ 20
-                                </div>
-                            </div>
-                            <div className="cartdetailsAlign">
-                                <div className="cartdetailsText">
-                                    Tax
-                                </div>
-                                <div className="cartdetailsText">
-                                    $ 2
-                                </div>
-                            </div>
-                            <Divider />
-                            <div className="cartdetailsAlign">
-                                <div className="totalText">
-                                    Total
-                                </div>
-                                <div className="totalText">
-                                    $ 240
-                                </div>
-                            </div>
-                            <Button  
-                                label="Place Your Order" 
-                                className="p-button-raised p-button-rounded p-button-warning" 
-                                style={{width:'100%',marginTop:16}}
-                                onClick={()=> this.props.history.push("/checkout")}
-                            />
-                        </div>
-
-                    </div>
-                 </div>
-            </Fragment>
-    )
+                    }
+                })
+            })
+            .catch((error) => {
+                this.setState({ loading: false }, () => {
+                    showToastMessage(this.toastRef, 'error', '', 'Opps, Something went wrong, Try again');
+                })
+            })
     }
 
 
 
-    // render(){
-    //     return(
-    //             <Fragment>
-    //                  <div className="p-grid " style={{ margin:40,}}>
-    //                 <div className="p-col-8">
-    //                 <ScrollPanel style={{width: '100%',padding:14}}>
-    //                     <h1>1. Shipping Address</h1>
-    //                     <div className="card-border">
-    //                         <div>
-    //                             <div style={{fontSize:20,fontWeight: 'bold',}}>Rajesh Gudimetla</div>
-    //                             <div style={{fontSize:18}}>Near Ramalayam</div>
-    //                             <div style={{fontSize:18}}>Khammam, 505303</div>
-    //                         </div>
-    //                         <Button label="Change Shipping Address" style={{height:45}} className="p-button-outlined" /> 
-    //                     </div>
-    //                     <h1>2. Select Payment</h1>
-    //                     <div className="card-border">
-                            
-    //                     </div>
-    //                     <Button label="Add A New Card" style={{height:45,alignSelf:'flex-end'}} className="p-button-outlined" />
-    //                     <h1>3. Item Review and Shipping</h1>
-    //                     <div className="card-border">
-                            
-    //                     </div>
-    //                     <Button label="Place Your Order" style={{height:45,width:'100%'}} className="p-button p-mt-4" />
-    //                 </ScrollPanel>
-                     
-    //                 </div>
-    //                 <div className="p-col-4">
-    //                 <Card title="Order Summary" style={{backgroundColor: '#f7f7f7',}}>
-    //                         <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginBottom:16}}>
-    //                             <div>Total Items :</div>
-    //                             <div>4</div>
-    //                         </div>  
-    //                         <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between',marginBottom:16}}>
-    //                             <div>Sub Total :</div>
-    //                             <div>$ 220</div>
-    //                         </div>  
-    //                         <Button label="Place Your Order" style={{width:'100%'}}  className="p-button-secondary" /> 
-    //                 </Card>
-    //                 </div>
-    //                 </div>
-    //             </Fragment>
-    //     )
-    // }
+    render() {
+        const { current } = this.state;
+        let userData = userProfile.getUserObj();
+        return (
+            <Fragment>
+                <Toast ref={this.toastRef} />
+                <div style={{ padding: 10, margin: '4%' }}>
+                    <div style={{ fontSize: 30, fontWeight: '600' }}>
+                        Checkout
+                    </div>
+                    {userData && userData.accessToken && userData.userId ?
+                        <div className="p-m-4">
+
+                            <Steps current={current} style={{ width: '60%' }}>
+                                {steps.map(item => (
+                                    <Step key={item.title} title={item.title} />
+                                ))}
+                            </Steps>
+                            <div className="steps-content">
+                                {current === 0 ?
+                                    <Locations
+                                        selectDeliveryAddress={this.selectDeliveryAddress.bind(this)}
+
+                                    /> :
+                                    (current === 1) ?
+                                        <Payment /> :
+                                        <div>dd</div>
+
+                                }
+                            </div>
+                            <div className="steps-action">
+                                {current < steps.length - 1 && (
+                                    <OneButton
+                                        onClick={() => this.onClickNext()}
+                                        buttonLabel={"Next"}
+                                        btnSize="large"
+                                        btnBlock={false}
+                                        btnDisabled={false}
+                                        buttonStyle={{ fontSize: 16, marginTop: 22, width: 200 }}
+                                    />
+                                )}
+                                {current === steps.length - 1 && (
+                                    <OneButton
+                                        onClick={() => this.submitOrder()}
+                                        buttonLabel={"Submit Order"}
+                                        btnSize="large"
+                                        btnBlock={false}
+                                        buttonStyle={{ fontSize: 16, marginTop: 22, width: 200 }}
+                                    />
+                                )}
+                                {current > 0 && (
+                                    <OneButton
+                                        onClick={() => this.setState({ current: current - 1 })}
+                                        buttonLabel={"Previous"}
+                                        btnSize="large"
+                                        btnType="dashed"
+                                        btnBlock={false}
+                                        buttonStyle={{
+                                            fontSize: 16, marginTop: 22, width: 200, marginLeft: 12,
+                                            backgroundColor: '#fff',
+                                        }}
+                                    />
+                                )}
+                            </div>
+
+
+
+                        </div> :
+                        <div>
+                            <Result
+                                status="403"
+                                title="Please Login to checkout"
+                                extra={<OneButton
+                                    onClick={() => this.props.history.push('/login')}
+                                    buttonLabel={"Go to Login Page"}
+                                    btnSize="large"
+                                    btnShape="round"
+                                    btnBlock={false}
+                                    buttonStyle={{fontSize:16,width: 220,}}
+                                />}
+                            />
+                        </div>}
+                </div>
+            </Fragment>
+        )
+    }
+
+
 
 }
 

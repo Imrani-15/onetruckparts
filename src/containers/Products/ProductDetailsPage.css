@@ -75,37 +75,37 @@
 
 .product_navbar{
     overflow: hidden;
-    background-color: #142977;
+    background-image: linear-gradient(to right, #FF891E , #ff9737, #faa453);
     position: sticky;
     top: 0;
     margin-left: 3%;
     margin-right: 3%;
     cursor: pointer;
+    border-radius: 2px;
 }
 
 .product_navbar a {
     float: left;
     display: block;
-    color: #fff;
+    color: #000;
     text-align: center;
-    padding: 14px;
+    padding: 12px;
     text-decoration: none;
     font-size: 18px;
+    font-weight: 600;
+    border-bottom: 3px solid #FF891E;
   }
   
-.product_navbar a:hover {
-    background-color: #fff;
-    color: #142977;
-  }
-  
-.product_navbar a.active {
+.product_navbar a:hover{
     background-color: #FF891E;
-    color: white;
-}
+    color: #fff;
+    border-bottom: 3px solid #fff;
+  }
+
 
 .product_navbar_title{
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 26px;
+    font-weight: bold;
     margin-top: 2%;
     margin-bottom: 1%;
 }
@@ -115,6 +115,35 @@
     line-height: 22px;
     margin-bottom: 6px;
 }
+
+
+ul.striped-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-top: 6px;
+}
+ul.striped-list > li {
+    padding: 10px;
+    width: 60%;
+    border-radius: 2px;
+    color: #000;
+}
+ul.striped-list > li:nth-of-type(odd) {
+    background-color: #f7f7f7 ;
+}
+ul.striped-list > li:last-child {
+    border-bottom: none;
+}
+
+
+.fitmentList{
+    padding: 6px 10px;
+    border: 1.5px solid green;
+    border-radius: 4px;
+    margin-top: 8px;
+}
+
 
 
 

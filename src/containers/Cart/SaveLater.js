@@ -75,8 +75,8 @@ class SaveLater extends React.Component {
             "emailId": this.props.loginData.emailId,
             "osku": rowData.osku
         }
-        let restUrl = `${PRODUCT_BASE_URL}account/saveforlater`;
-        serviceCall(inpobj, restUrl, 'DELETE')
+        let restUrl = `${PRODUCT_BASE_URL}account/removesaveforlater`;
+        serviceCall(inpobj, restUrl, 'POST')
             .then((res) => {
                 if (!res.error) {
                     showToastMessage(this.toastRef,'error', '', `Product "${rowData.title}" removed from wishlist`);

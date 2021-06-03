@@ -6,11 +6,11 @@ import './styles/Slider.css'
 
 const Slider = ({ data, goToBrandsPage }) => {
   return (
-  <div  class="container">
+  <div  className="container">
       <Carousel autoplay dots={false}>
         {data.map((item)=>{
         return(
-          <div style={{display:'flex'}}>
+          <div style={{display:'flex'}} key={item.id}>
               <img src={item.imgurl}  style={{height:'100%',width:'140%',}}
                 onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'} />
           </div>

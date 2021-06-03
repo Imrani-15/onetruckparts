@@ -1,10 +1,11 @@
 import React, { Fragment } from 'react';
 
+import { ScrollTop } from 'primereact/scrolltop';
 import { InputText } from 'primereact/inputtext';
 import { Skeleton } from 'primereact/skeleton';
 import { Button } from 'primereact/button';
 import serviceCall from '../../utils/Services';
-import { PRODUCT_BASE_URL } from '../../utils/Constants';
+import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
 import '../Home/HomePage.css'
 
@@ -18,13 +19,29 @@ class BrandsPage extends React.Component {
             dummyArray:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
             searchInput: '',
             alphabet: '',
-            showBrands:true
+            showBrands:true,
+            scrolling : false
         }
+        this.handleScroll = this.handleScroll.bind(this)
 
     }
 
     componentWillMount() {
+        window.addEventListener('scroll', this.handleScroll, true);
         this.getBrands();
+    }
+
+    componentWillUnmount(){
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    handleScroll(event) {
+        if (window.scrollY < 200) {
+            this.setState({scrolling: false});
+        }
+        else if (window.scrollY > 200) {
+            this.setState({scrolling: true});
+        }
     }
 
 
@@ -58,7 +75,10 @@ class BrandsPage extends React.Component {
         let result = [];
         for (let i = 65; i < 91; i++) {
             result.push(
-                <Button label={String.fromCharCode(i)} onClick={() => this.onAlphabetClick(String.fromCharCode(i))} className="p-button-outlined p-button-secondary p-m-2 p-button-lg" />
+                <Button label={String.fromCharCode(i)} 
+                onClick={() => this.onAlphabetClick(String.fromCharCode(i))} 
+                style={(String.fromCharCode(i) === this.state.alphabet) ?{backgroundColor:appTheme.logoTextColor,color:'#fff'} : {}}
+                className="p-button-outlined p-button-secondary p-m-1" />
             )
         }
         return result;
@@ -110,21 +130,31 @@ class BrandsPage extends React.Component {
         const filteredList = this.filterItems(brands);
         return (
             <Fragment >
+                 <ScrollTop />
                 <div style={{ margin: '3%' }}>
-                    <div style={{ fontSize: 34, fontWeight: '600' }}>
-                        Shop By <span style={{ fontWeight: '400' }}>Brand</span>
-                    </div>
-                    <div className="p-m-6">
+                        <div style={{ fontSize: 34, fontWeight: '600' }}>
+                            Shop By <span style={{ fontWeight: '400' }}>Brand</span>
+                        </div>
+
+                    <div className="p-m-6" 
+                        style={{ width:this.state.scrolling ? '90%' : null,display:'flex', 
+                        alignItems:'center', justifyContent:'center',
+                        position:this.state.scrolling ? 'fixed' : null, top:0,
+                        backgroundColor:'#fff',zIndex:1, padding: 12,
+                        }}>
                         {this.prepareAlphabets()}
                     </div>
                     <div className="p-m-6" style={{ display: 'flex', justifyContent: 'center' }}>
-                        <span className="p-float-label p-input-icon-right">
+                            <span className="p-input-icon-right">
                             <InputText id="search"
-                                style={{ width: 1200, height: 48 }}
+                                style={{ width: 800}}
+                                className="p-inputtext-lg p-d-block"
+                                placeholder="Search by brand"
                                 value={searchInput} onChange={this.onSearchInputChange} />
-                            <i className="pi pi-search" />
-                            <label htmlFor="search">Search by Brand</label>
+                                 <i className="pi pi-search" style={{color:appTheme.logoTextColor}}/>
                         </span>
+                     
+                        
                     </div>
                     {!showBrands ?
                     <div>

@@ -1,13 +1,16 @@
 import React from 'react';
 
+import axios from 'axios';
 import { Toast } from 'primereact/toast';
-import {Button} from 'primereact/button';
 import {Password} from 'primereact/password';
+import { Messages } from 'primereact/messages';
 import { InputText } from "primereact/inputtext";
 
+import FirebaseAuth from './FirebaseAuth';
 import OneButton from '../../components/OneButton';
 import AppSpinner from '../../components/AppSpinner';
 import {formValidation,emailValidation} from '../../utils/Utils';
+import logo from '../../assets/logo.png';
 import userProfile from '../../utils/UserProfile';
 import {appTheme, PRODUCT_BASE_URL} from  '../../utils/Constants';
 import callSerivce from '../../utils/Services';
@@ -22,6 +25,7 @@ class Login extends React.Component {
         super(props);
         this.state={
             loading:false,
+            formInvalid: false,
             emailId:'',
             password:'',
             isError:{
@@ -30,6 +34,7 @@ class Login extends React.Component {
             }
         }
         this.toastRef = React.createRef();
+        this.messageRef = React.createRef();
     }
 
    
@@ -57,45 +62,88 @@ class Login extends React.Component {
       
         this.setState({
             isError,
-            [name]: value
+            [name]: value,
+            formInvalid:false
         })
     }
+
+    componentDidMount(){
+    }
+
+  
 
     submitLogin = () => {
         const {emailId, password } = this.state;
         this.setState({loading:true})
         if (formValidation(this.state.isError,{emailId,password})) {
-            let inpobj = {
-                "emailId": emailId,
-                "password": password
-            }
-            let restUrl = `${PRODUCT_BASE_URL}account/login`;
-            callSerivce(inpobj, restUrl, 'POST')
-                .then((res) => {
-                    console.log("login", res)
-                    this.setState({loading:false},()=>{
-                        if (!res.data.error) {
-                            userProfile.setUserObj(res.data);
-                            this.props.setUserLoginData(res.data)
-                            this.props.history.replace('/');
-                        } else {
-                            this.showTost('error', 'Error Message', res.data.message);
-                        }
-                    })
-                    
-                })
-                .catch((error) => {
-                    this.setState({loading:false},()=>{
-                        this.showTost('error', 'Error Message', 'Opps, Something went wrong, Try again');
-                    })
-                 
-                })
+            this.setState({ formInvalid: false })
+            FirebaseAuth.auth().signInWithEmailAndPassword(emailId, password).then(async(user)=>{
+                    if(user){
+                        let currentUser  = await FirebaseAuth.auth().currentUser;
+                        let token = currentUser &&  await FirebaseAuth.auth().currentUser.getIdToken(true);
+                        // axios.post(`${PRODUCT_BASE_URL}account/validateRole`,{},
+                        //     { headers: { Authorization: `Bearer ${token}` } }
+                        //   ).then((response)=> {
+                        //     if (!response.data.error) {    
+                                let userData = {
+                                    userId: currentUser.uid,
+                                    emailId : currentUser.email,
+                                    accessToken : token,
+                                    userRole : false  //response.data.role
+                                }
+                                userProfile.setUserObj(userData);
+                                this.props.setUserLoginData(userData)
+                                this.setState({loading:false})
+                                this.props.history.replace('/');
+                        //     }else{
+
+                        //     }
+                        //   })
+                        //   .catch((e) => {
+                        //     console.log(e);
+                        //   });
+                    }else{
+                        this.setState({loading:false});
+                    }
+            
+            
+            
+                }
+            )
+            .catch(err => {
+                switch (err.code){
+                    case "auth/invalid-email":
+                    case "auth/user-disabled":
+                    case "auth/user-not-found":
+                        this.setState({loading:false},()=>{
+                            this.messageRef.current.show({ severity: 'error', summary: '', content:
+                            (<h5>{err.message}</h5>), 
+                             closable:false,
+                             sticky: false })
+                        })
+                    break;
+                    case "auth/wrong-password":
+                        this.setState({loading:false},()=>{
+                            this.messageRef.current.show({ severity: 'error', summary: '', content:
+                            (<h5>{err.message}</h5>), 
+                            closable:false,
+                            sticky: false })
+                        })
+                    break;
+                }
+            })
         } else {
-            this.setState({loading:false})
-            this.showTost('error', 'Error Message', 'Form is invalid, Please check details');
+            this.setState({loading:false, formInvalid:true})
+            this.showTost('error', 'Login', 'Please enter all required fields.');
         }
       
     }
+
+    updateState(){
+        alert("updateState")
+    }
+
+
 
     showTost(type, title, detail) {
         this.toastRef.current.show({ severity: type, summary: title, detail: detail, life: 2000 });
@@ -103,17 +151,19 @@ class Login extends React.Component {
 
 
     render(){
-        const  {loading, emailId, password, isError } = this.state;
+        const  {loading, emailId, password, isError , formInvalid} = this.state;
         return(
             <div className="login-body">
                 <Toast ref={this.toastRef} />
                 {loading && <AppSpinner /> }
                 <div className="login-main p-shadow-1">
-                    <h1 style={{textAlign:'center', fontWeight:'500'}}>Sign in to your account</h1>
+                     <img src={logo} alt={'logo'} style={{justifySelf: 'center'}} height="48px"  />
+                    <h1 style={{textAlign:'center', fontWeight:'500', color:appTheme.secondaryColor}}>Sign in to continue</h1>
+                    <Messages ref={this.messageRef} style={{width:300}} />
                     <div className="p-field">
-                        <label htmlFor="email" className="p-d-block">Email</label>
+                        <label htmlFor="email" className="p-d-block">Email address</label>
                         <InputText id="email" value={emailId} name="emailId" 
-                        className={(isError.emailId.length > 0) ? "p-invalid p-inputtext-sm p-d-block" :"p-inputtext-sm p-d-block"}
+                        className={(isError.emailId.length > 0 || formInvalid) ? "p-invalid p-inputtext-sm p-d-block" :"p-inputtext-sm p-d-block"}
                         onChange={this.handleChange} style={{width:300}} />
                         {isError.emailId.length > 0 && (
                           <small id="email-help" className="p-error p-d-block">{isError.emailId}</small>
@@ -122,7 +172,7 @@ class Login extends React.Component {
                     <div className="p-field">
                         <label htmlFor="password" className="p-d-block">Password</label>
                         <Password id="password" value={password} name="password" 
-                        className={(isError.password.length > 0) ? "p-invalid p-password p-password-sm" :"p-password p-password-sm"}
+                        className={(isError.password.length > 0 || formInvalid) ? "p-invalid p-password p-password-sm" :"p-password p-password-sm"}
                         onChange={this.handleChange} style={{width:300}}
                         toggleMask feedback={false}/>
                         {isError.password.length > 0 && (

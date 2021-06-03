@@ -11,7 +11,6 @@ import {Provider} from "react-redux";
 
 import './App.css';
 import "antd/dist/antd.css";
-
 import userProfile from "./utils/UserProfile";
 import Launch from "./containers/Launch";
 
@@ -26,6 +25,12 @@ class App extends React.Component{
        appStore.dispatch({type:'SET_LOGIN_DATA', data:userObj})
     }
   }
+
+  componentDidMount(){
+  
+  }
+
+  
 
   render(){
     return(

@@ -3,28 +3,30 @@ import React, { Fragment } from 'react';
 import {
    Row, Col,
    Popover, Empty ,
-   message, Select, Divider,
+   Select, Divider,
    Badge, Avatar
 } from 'antd';
 import { Link } from 'react-router-dom';
 import { OverlayPanel } from 'primereact/overlaypanel';
-
 import { Button } from 'primereact/button';
-
 import { connect } from "react-redux";
 import {
    DownOutlined, ShoppingCartOutlined,
    CarOutlined, UserOutlined
 } from '@ant-design/icons';
+
 import Search from './Search';
 import OneButton from '../OneButton';
-import logo from '../../assets/logo.png'
-import "./Navbar.css"
+import logo from '../../assets/oneauto.png';
+import noFitment from '../../assets/nofitment.png';
+
 import {isNotEmpty} from '../../utils/Utils';
 import serviceCall from '../../utils/Services';
-import { appTheme, menuItems , PRODUCT_BASE_URL} from '../../utils/Constants';
+import { appTheme, menuItems , PRODUCT_BASE_URL, userRoles} from '../../utils/Constants';
 import userProfile from '../../utils/UserProfile';
+import FirebaseAuth from '../../containers/Auth/FirebaseAuth';
 
+import "./Navbar.css";
 
 const { Option } = Select;
 class Navbar extends React.Component {
@@ -33,6 +35,7 @@ class Navbar extends React.Component {
       this.state = {
          showAccountPopOver:false,
          createNewFitment:false,
+         userData:{},
          categories: [],
          fitmentList:[],
          fitmentYear:[],
@@ -50,6 +53,8 @@ class Navbar extends React.Component {
 
    componentDidMount() {
       this.getCategories();
+      let userData =  userProfile.getUserObj();
+      this.setState({userData:userData});
    }
 
 
@@ -72,27 +77,29 @@ class Navbar extends React.Component {
       this.setState({ showAccountPopOver });
     };
 
+    hideMenuPopOver = () => {
+       this.setState({showAccountPopOver:false})
+    }
+
     logOut=()=>{
-       this.setState({showAccountPopOver:false},()=>{
+      FirebaseAuth.auth().signOut().then(()=>{
          userProfile.setUserObj({});
-         this.props.removeUserLoginData();
-       })
-      
+         this.setState({showAccountPopOver:false,userData:{}})
+      })      
     }
 
 
     renderMenu = () => {
-
-      const { loginData } = this.props;
+      const {userData} = this.state;
       return (
         <div>
           <div className="menu-list-btn-item">
-            {(loginData.accessToken) ?
+            {(userData && userData.emailId) ?
               <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Avatar size="large" style={{ backgroundColor: appTheme.primaryColor }} >
-                  {loginData.emailId.charAt(0)}
+                  {userData.emailId.charAt(0)}
                 </Avatar>
-                <h3 style={{ alignSelf: 'center' }}>{loginData.emailId}</h3>
+                <h3 style={{ alignSelf: 'center',marginLeft:10 }}>{userData.emailId}</h3>
               </div> :
               <Link className="navbar-btn-text" to="/login">
                 <OneButton 
@@ -107,20 +114,21 @@ class Navbar extends React.Component {
           </div>
           {menuItems.map((item, index) =>
             <Link className='menu-list-item' key={index} to={item.screenToNavigate}
+            onClick={this.hideMenuPopOver.bind(this)}
               >
               <h4 style={{ color: appTheme.lightColor }}>
                 {item.navOptionName}
               </h4>
             </Link>
           )}
-          <div className='menu-list-item' 
-          //onClick={this.updateContactModal.bind(this)}
-          >
-            <h4 style={{ color: appTheme.lightColor }}>
-              Contact Us
-                </h4>
-          </div>
-          {isNotEmpty(loginData.accessToken) &&
+          <Link className='menu-list-item' to='/settings'
+            onClick={this.hideMenuPopOver.bind(this)}
+              >
+              <h4 style={{ color: appTheme.lightColor }}>
+                Settings
+              </h4>
+            </Link>
+          {(userData && userData.accessToken) &&
             <div className='menu-list-item'
              onClick={this.logOut.bind(this)}
              >
@@ -207,19 +215,28 @@ class Navbar extends React.Component {
          })
    }
 
-   addVechile = () => {
+   addVehicle = () => {
       const {selectedYear, selectedMake, selectedModel} = this.state;
-      let restUrl = `${PRODUCT_BASE_URL}fitment/garage/add/${selectedYear}/${selectedMake}/${selectedModel}`
-      serviceCall({}, restUrl, 'GET')
-         .then((res) => {
-            if (!res.error) {
-               this.setState({ fitmentList: res.data.garage , createNewFitment:false})
-            } else {
+      if(!isNotEmpty(selectedYear)){
 
-            }
-         })
-         .catch((error) => {
-         })
+      }else if(!isNotEmpty(selectedMake)){
+
+      }else if(!isNotEmpty(selectedModel)){
+
+      }else{
+         let restUrl = `${PRODUCT_BASE_URL}fitment/garage/add/${selectedYear}/${selectedMake}/${selectedModel}`
+         serviceCall({}, restUrl, 'GET')
+            .then((res) => {
+               if (!res.error) {
+                  this.setState({ fitmentList: res.data.garage , createNewFitment:false})
+               } else {
+   
+               }
+            })
+            .catch((error) => {
+            })
+      }
+
    }
 
    deleteVechile = (index) => {
@@ -241,15 +258,17 @@ class Navbar extends React.Component {
 
 
    render() {
-      const { categories, createNewFitment, showAccountPopOver, fitmentList, fitmentYear, fitmentMake, fitmentModel, selectedYear, selectedMake } = this.state
-      let { userdata, loginData } = this.props;
+      const { categories, createNewFitment, showAccountPopOver, fitmentList, userData,
+         fitmentYear, fitmentMake, fitmentModel, selectedYear, selectedMake } = this.state
+      let { userdata } = this.props;
 
       return (
          <Fragment>
             <Row type="flex" className="navbar-main">
-               <Col span={2} className="navbar-style">
-                  <Link to={'/'} style={{ display: 'grid' }}>
-                     <img src={logo} style={{ alignSelf: 'center', justifySelf: 'center' }} height="40px" width="90px" />
+            <Fragment>
+               <Col span={2} className="navbar-style" style={{}}>
+                  <Link to={'/'} >
+                     <img src={logo} alt={'logo'} style={{ alignSelf: 'center', justifySelf: 'center',marginLeft: 6}} height="40px"  />
                   </Link>
                </Col>
                <Col span={19} className="navbar-style">
@@ -268,7 +287,7 @@ class Navbar extends React.Component {
                            visible={showAccountPopOver}
                            onVisibleChange={this.handleVisibleChange}
                            title="">
-                           {(loginData.accessToken) ?
+                           {(userData && userData.accessToken) ?
                            <h3 style={{ color: '#fff',marginBottom:0 }}>My Account <DownOutlined /></h3> :
                            <div style={{ color: '#fff',marginBottom:0 }}>
                               <h3 style={{ color: '#fff',marginBottom:0  }}>My Account</h3>
@@ -291,9 +310,38 @@ class Navbar extends React.Component {
                      <h3 style={{ marginLeft: 20, color: '#fff',marginTop:4 }}>My Cart</h3>
                   </Link>
                </Col>
+            </Fragment>
+            <Fragment>
+            <Col span={1} />
+            <Col span={5} className="navbar-style">
+               <Link className="navbar-brand"
+                  to={'/brands'}
+                >BRANDS</Link>
+            </Col>
+          
+            <Col span={13} className="navbar-style">
+            <div className="navbar-main-categories">
+                  {categories !==0 && categories.map((cat,index)=>(
+                        <>
+                          {(index >0) && <div className="navbar-vl" /> }
+                         <Link className="navbar-btn-text" key={index}
+                           to={{ pathname: '/products/category:'+cat.name, state: { catName: cat.name } }}
+                         >{cat.display_name}</Link>
+
+                         </>
+                  ))}
+            </div>
+            </Col>
+            <Col span={4} className="navbar-style">
+               <div className="selectVechile" onClick={(e)=>this.openFitmentPopOver(e)}>
+                   <CarOutlined style={{marginRight:10,fontSize:24}}/>  Select Your Vehicle
+               </div>
+            </Col>
+            <Col span={1} />
+            </Fragment>
             </Row>
-            <Row type="flex" className="navbar-main">
-               <Col span={1.5} className="navbar-style">
+            {/* <Row type="flex" className="navbar-main"> */}
+               {/* <Col span={1.5} className="navbar-style">
             
                </Col>
                <Col span={2} className="navbar-style">
@@ -308,7 +356,7 @@ class Navbar extends React.Component {
                            <>
                              {(index >0) && <div className="navbar-vl" /> }
                             <Link className="navbar-btn-text" key={index}
-                              to={{ pathname: '/products/category:'+cat.display_name, state: { catName: cat.display_name } }}
+                              to={{ pathname: '/products/category:'+cat.name, state: { catName: cat.name } }}
                             >{cat.display_name}</Link>
 
                             </>
@@ -317,12 +365,12 @@ class Navbar extends React.Component {
                </Col>
                <Col span={3.5} className="navbar-style">
                   <div className="selectVechile" onClick={(e)=>this.openFitmentPopOver(e)}>
-                      <CarOutlined style={{marginRight:14,fontSize:24}}/>  Select Your Vechile
+                      <CarOutlined style={{marginRight:10,fontSize:24}}/>  Select Your Vechile
                   </div>
                </Col>
                <Col span={1} />
-            
-            </Row>
+             */}
+           
             {/* <Col span={24} style={{display:'flex',justifyContent:'center'}}>
                   <h2 class="test-text" onClick={(e)=>this.openFitmentPopOver(e)}>
                   <CarOutlined style={{marginRight:16,fontSize:24,color:appTheme.logoTextColor}}/>  Select Your Vechile
@@ -373,8 +421,8 @@ class Navbar extends React.Component {
                               buttonStyle={{fontSize:16, marginRight:6, backgroundColor:'#fff', borderColor:'#fff', color:appTheme.logoTextColor}}
                            /> 
                            <OneButton 
-                              onClick={this.addVechile} 
-                              buttonLabel={"Add Vechile"}
+                              onClick={this.addVehicle} 
+                              buttonLabel={"Add Vehicle"}
                               btnSize="large"
                               btnBlock={false}
                               buttonStyle={{fontSize:16}}
@@ -384,20 +432,23 @@ class Navbar extends React.Component {
                       </div> :
                       <div>
                         {fitmentList.length ===0 ?
-                           <Empty /> :
+                           <div style={{display:'flex',justifyContent:'center',alignItems:'center', flexDirection:'column'}}>
+                              <img src={noFitment} alt={'noFitment'} 
+                              style={{ alignSelf: 'center', justifySelf: 'center',marginLeft: 6}} height="120px"  />
+                              <h3 style={{color:appTheme.logoTextColor}}>No Fitmet Data</h3>
+                           </div> :
                            <div>
-                              <div style={{fontSize:18,fontWeight:'600', marginBottom:8}}>Select Your Vechile</div>
+                              <div style={{fontSize:18,fontWeight:'600', marginBottom:8}}>Select Your Vehicle</div>
                               {fitmentList.map((fit,index)=>(
-                                 <div className="p-shadow-2 fitment-list p-mb-2" onClick={()=>this.deleteVechile(index)}>
+                                 <div className="p-shadow-2 fitment-list p-mb-2" >
                                     <div className="fitment-list">
-                                       <Button icon="pi pi-circle-off" className="p-button-danger p-button-text" />
                                        <div>
-                                          <div style={{fontSize:16,fontWeight:'600',marginBottom:0}}>{fit.makename}</div>
+                                          <div style={{fontSize:16,fontWeight:'600',marginBottom:0}}>{fit.makename} {' '} ( {fit.year} )</div>
                                           <div style={{fontSize:14,fontWeight:'500', color:appTheme.dark5}}>{fit.modelname}, {fit.mfrlabel}</div>
                                        </div>
                                     </div>
                                     <div>
-                                       <Button icon="pi pi-trash" className="p-button-danger p-button-text" />
+                                       <Button icon="pi pi-trash" className="p-button-danger p-button-text" onClick={()=>this.deleteVechile(index)} />
                                     </div>
                                  </div>
                               ))}
@@ -407,7 +458,7 @@ class Navbar extends React.Component {
                           <div style={{display:'flex', justifyContent:'flex-end',marginTop:22}}>
                            <OneButton 
                               onClick={()=> this.setState({createNewFitment:true})} 
-                              buttonLabel={"Add New Vechile"}
+                              buttonLabel={"Add New Vehicle"}
                               btnSize="large"
                               btnBlock={false}
                               buttonStyle={{fontSize:16}}
