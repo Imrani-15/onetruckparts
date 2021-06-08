@@ -59,12 +59,12 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
                     }}>
                         ${product.price}
                     </div>
-                    <Button icon="pi pi-bookmark" className="p-button-rounded p-button-sm"  
-                    tooltip="Save to later"
-                    tooltipOptions={{position: 'bottom'}}
+                    <Button icon="pi pi-heart" className="p-button-rounded p-button-sm"  
+                    //tooltip="Save to later"
+                   // tooltipOptions={{position: 'bottom'}}
                     onClick={()=> saveLater(product)}
-                    style={{backgroundColor:appTheme.primaryColor,
-                        borderColor:appTheme.primaryColor}}/>
+                    style={{backgroundColor:appTheme.dark6,
+                        borderColor:appTheme.dark6}}/>
                 </div>
                 <OneButton 
                     onClick={() => addToCart(product)} 

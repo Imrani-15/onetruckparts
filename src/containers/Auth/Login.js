@@ -1,8 +1,9 @@
 import React from 'react';
 
-import axios from 'axios';
+import firebase from 'firebase';
 import { Toast } from 'primereact/toast';
 import {Password} from 'primereact/password';
+import { Divider } from 'primereact/divider';
 import { Messages } from 'primereact/messages';
 import { InputText } from "primereact/inputtext";
 
@@ -12,8 +13,7 @@ import AppSpinner from '../../components/AppSpinner';
 import {formValidation,emailValidation} from '../../utils/Utils';
 import logo from '../../assets/logo.png';
 import userProfile from '../../utils/UserProfile';
-import {appTheme, PRODUCT_BASE_URL} from  '../../utils/Constants';
-import callSerivce from '../../utils/Services';
+import {appTheme} from  '../../utils/Constants';
 import { connect } from "react-redux";
 
 import './Auth.css'
@@ -80,11 +80,7 @@ class Login extends React.Component {
             FirebaseAuth.auth().signInWithEmailAndPassword(emailId, password).then(async(user)=>{
                     if(user){
                         let currentUser  = await FirebaseAuth.auth().currentUser;
-                        let token = currentUser &&  await FirebaseAuth.auth().currentUser.getIdToken(true);
-                        // axios.post(`${PRODUCT_BASE_URL}account/validateRole`,{},
-                        //     { headers: { Authorization: `Bearer ${token}` } }
-                        //   ).then((response)=> {
-                        //     if (!response.data.error) {    
+                        let token = currentUser &&  await FirebaseAuth.auth().currentUser.getIdToken(true);  
                                 let userData = {
                                     userId: currentUser.uid,
                                     emailId : currentUser.email,
@@ -95,13 +91,6 @@ class Login extends React.Component {
                                 this.props.setUserLoginData(userData)
                                 this.setState({loading:false})
                                 this.props.history.replace('/');
-                        //     }else{
-
-                        //     }
-                        //   })
-                        //   .catch((e) => {
-                        //     console.log(e);
-                        //   });
                     }else{
                         this.setState({loading:false});
                     }
@@ -139,8 +128,31 @@ class Login extends React.Component {
       
     }
 
-    updateState(){
-        alert("updateState")
+
+
+    loginUsingGmail = () => {
+        var provider = new firebase.auth.GoogleAuthProvider();
+        FirebaseAuth.auth()
+            .signInWithPopup(provider)
+            .then((result) => {
+                var credential = result.credential;
+                var token = credential.idToken;
+                var currentUser = result.user;
+                
+                let userData = {
+                    userId: currentUser.uid,
+                    emailId : currentUser.email,
+                    accessToken : token,
+                    userRole : false  //response.data.role
+                }
+                userProfile.setUserObj(userData);
+                this.props.setUserLoginData(userData)
+                this.setState({loading:false})
+                this.props.history.replace('/');
+            }).catch((error) => {
+                // Handle Errors here.
+
+            });
     }
 
 
@@ -179,7 +191,7 @@ class Login extends React.Component {
                           <small id="password-help" className="p-error p-d-block">{isError.password}</small>
                         )}
                     </div>
-                    <div className="resetpasswordText" onClick={()=>this.props.history.push('/createnewpassword')} >Forgot Password</div>
+                    {/* <div className="resetpasswordText" onClick={()=>this.props.history.push('/createnewpassword')} >Forgot Password</div> */}
                     <OneButton 
                         onClick={this.submitLogin} 
                         buttonLabel={"Login"}
@@ -197,7 +209,17 @@ class Login extends React.Component {
                         btnSize="large"
                         buttonStyle={{fontSize:16,backgroundColor:'#fff',color:appTheme.primaryColor}}
                         /> 
-                    
+                    <Divider align="center">
+                        <b>OR</b>
+                    </Divider>
+                    <OneButton 
+                        onClick={this.loginUsingGmail}
+                        buttonLabel={"Sign in with Google"}
+                        btnShape="round"
+                        btnSize="large"
+                        showIcon={true}
+                        buttonStyle={{fontSize:16,backgroundColor:'#4081EC', borderColor:'#4081EC'}}
+                        /> 
                 </div>
      
             </div>

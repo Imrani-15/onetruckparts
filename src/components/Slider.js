@@ -11,7 +11,7 @@ const Slider = ({ data, goToBrandsPage }) => {
         {data.map((item)=>{
         return(
           <div style={{display:'flex'}} key={item.id}>
-              <img src={item.imgurl}  style={{height:'100%',width:'140%',}}
+              <img src={item.imgurl}  style={{height:'90%',width:'120%',}}
                 onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'} />
           </div>
           

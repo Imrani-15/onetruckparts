@@ -6,6 +6,7 @@ import { Button } from 'primereact/button';
 import { Checkbox } from 'primereact/checkbox';
 import { InputText } from "primereact/inputtext";
 
+import logo from '../../assets/logo.png';
 import OneButton from '../../components/OneButton';
 import { formValidation, showToastMessage } from '../../utils/Utils';
 import userProfile from '../../utils/UserProfile';
@@ -253,6 +254,9 @@ class Locations extends React.Component {
                     </div>
                     {userAddress.map((address)=>(
                         <div className="locationCard">
+                            <div>
+                                <img src={logo} alt={'logo'} style={{justifySelf: 'center'}} height="22px"  />
+                            </div>
                             <div>
                             <h3>{address.line1}</h3>
                             <h3>{address.line2}</h3>

@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 
-import { message, Pagination, Empty } from 'antd';
+import { Pagination } from 'antd';
+import { connect } from "react-redux";
 import { Divider } from 'primereact/divider';
 
 import { Toast } from 'primereact/toast';
@@ -9,9 +10,9 @@ import noProductsFound from '../../assets/No_Product_Found.png';
 
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 import { isNotEmpty, showToastMessage } from '../../utils/Utils';
-import { connect } from "react-redux";
 
 
+import ReactSnackBar from "../../components/ReactSnackBar";
 import ProductCard from '../../components/ProductCard/ProductCard';
 import AppSpinner from '../../components/AppSpinner';
 
@@ -32,8 +33,13 @@ class ProductsList extends React.Component {
             fromBrands: false,
             categories: [],
             selectedCat: false,
-            selectedCategory: {},
-            productFilters:[]
+            showCategoryFilter:false,
+            selectedCategory: "",
+            productFilters:[],
+            defaultType:"",
+            Show: false,
+            Showing: false,
+            toastMsg:''
         }
         this.toastRef = React.createRef();
         this.updateCategory = true
@@ -41,18 +47,25 @@ class ProductsList extends React.Component {
 
     componentWillMount() {
         this.getCategory();
+        window.scrollTo(0, 0);
         this.updateCategory = true;
-        let brand = new URLSearchParams(this.props.location.search).get("brands");
+        let brand = new URLSearchParams(this.props.location.search).get("brands"); 
         let checkBrand = isNotEmpty(brand) ? brand : false;
-        this.setState({ fromBrands: checkBrand }, () => {
+        let defaultType = this.props.match.params.type.replace(":", "");
+        
+        this.setState({ fromBrands: checkBrand,defaultType , showCategoryFilter:checkBrand}, () => {
             this.getProductsList();
         })
     }
 
 
     componentDidUpdate(prevProps) {
-        if (prevProps.match.params.category.replace(":", "") !== this.props.match.params.category.replace(":", "")) {
-            this.setState({ showLoader: true, pageNum: 1 }, () => {
+        if (prevProps.match.params.type.replace(":", "") !== this.props.match.params.type.replace(":", "")) {
+            window.scrollTo(0, 0);
+            let defaultType = this.props.match.params.type.replace(":", "");
+            let brand = new URLSearchParams(this.props.location.search).get("brands"); 
+            let checkBrand = isNotEmpty(brand) ? brand : false;
+            this.setState({ showLoader: true, pageNum: 1,defaultType,fromBrands:checkBrand }, () => {
                 this.getProductsList();
             })
         }
@@ -74,10 +87,22 @@ class ProductsList extends React.Component {
     }
 
     getProductsList = () => {
-        const { pageNum, pageSize, fromBrands, selectedCat, selectedCategory } = this.state;
-        let category = this.props.match.params.category.replace(":", "");
-        let filter = (fromBrands) ? (selectedCat) ?
-            `&brand=${encodeURIComponent(category)}&category=${selectedCategory.name}` : `&brand=${encodeURIComponent(category)}` : `&category=${category}`
+        const { pageNum, pageSize, fromBrands, selectedCat, selectedCategory,defaultType } = this.state;
+        // If sort by only brand then send brand
+        // If sort by only category then send category
+        // If sort by both send both
+        let filter = "";
+        if(fromBrands){
+            if(selectedCat){
+                filter = `&brand=${encodeURIComponent(defaultType)}&category=${selectedCategory}`;
+            }else{
+                filter = `&brand=${encodeURIComponent(defaultType)}`;
+            }   
+        }else{
+            filter = `&category=${defaultType}`;
+        }
+       
+        
         let restUrl = encodeURI(`${PRODUCT_BASE_URL}prod?db=mainDB&page=${pageNum}&limit=${pageSize}${filter}`);
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
@@ -92,7 +117,7 @@ class ProductsList extends React.Component {
     }
 
     getAllProductsBrand() {
-        this.setState({ showLoader: true, pageNum: 1, selectedCat: false, selectedCategory: {} }, () => {
+        this.setState({ showLoader: true, pageNum: 1, selectedCat: false, selectedCategory: "" }, () => {
             this.getProductsList();
             this.getCategory();
         })
@@ -110,14 +135,17 @@ class ProductsList extends React.Component {
 
             return item
         })
-        this.setState({ categories: categories, selectedCat: true, selectedCategory: cat, pageNum: 1, showLoader: true }, () => {
+        this.setState({ categories: categories, selectedCat: true, selectedCategory: cat.name, pageNum: 1, showLoader: true }, () => {
             this.getProductsList();
         })
 
     }
 
     getProductsByCatBrand(brand){
-
+        let selectedCategory = this.state.defaultType;
+        this.setState({selectedCat: true, selectedCategory:selectedCategory,defaultType:brand,fromBrands:true, pageNum: 1, showLoader: true }, () => {
+            this.getProductsList();
+        })
     }
 
 
@@ -129,14 +157,8 @@ class ProductsList extends React.Component {
         })
     }
 
-    paginationBtn = (type) => {
-        this.setState({ pageNum: (type === 'ADD') ? this.state.pageNum + 1 : this.state.pageNum - 1, showLoader: true }, () => {
-            window.scrollTo(0, 0);
-            this.getProductsList();
-        })
-    }
 
-    paginationBtn1 = (page, pageSize) => {
+    paginationBtn = (page, pageSize) => {
         this.setState({ pageNum: page, pageSize: pageSize, showLoader: true }, () => {
             window.scrollTo(0, 0);
             this.getProductsList();
@@ -154,9 +176,10 @@ class ProductsList extends React.Component {
             serviceCall({}, restUrl, 'GET')
                 .then((res) => {
                     if (!res.error) {
-                        showToastMessage(this.toastRef, 'success', '', `Product "${product.title}" added to cart`);
-                        this.setState({ cartLoader: false })
-                        this.props.setUserData({ cartcount: res.data.cart.length, orderTotal: res.data.ordertotal });
+                        this.setState({ cartLoader: false, toastMsg:`Product  added to the cart.` },()=>{
+                            this.showToast();
+                        })
+                        this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
                     } else {
                         this.setState({ cartLoader: false })
                     }
@@ -171,21 +194,15 @@ class ProductsList extends React.Component {
         if (this.props.loginData && this.props.loginData.emailId) {
             let restUrl = `${PRODUCT_BASE_URL}account/saveforlater`;
             let inpobj = {
-                "emailId": this.props.loginData.emailId,
-                "osku": product.osku
+                emailId: this.props.loginData.emailId,
+                osku: product.osku
             }
             serviceCall(inpobj, restUrl, 'POST')
                 .then((res) => {
                     if (!res.error) {
-                        message.success({
-                            content: `Product "${product.title}" added as save for later`,
-                            className: 'custom-class',
-                            style: {
-                                marginTop: '12vh',
-                            },
-                        });
-                        // message.success(`Product "${product.title}" added as save for later`,);
-                        this.setState({ cartLoader: false })
+                        this.setState({ cartLoader: false, toastMsg:`Product  added to wishlist` },()=>{
+                            this.showToast();
+                        })
                     } else {
                         this.setState({ cartLoader: false })
                     }
@@ -194,23 +211,33 @@ class ProductsList extends React.Component {
                     this.setState({ cartLoader: false })
                 })
         } else {
-            showToastMessage(this.toastRef, 'error', 'Error Message', `Please login to save for later`);
+            this.setState({ cartLoader: false, toastMsg:`Please login to add to wishlist` },()=>{
+                this.showToast();
+            })
         }
 
 
     }
 
+    showToast = () => {
+        if (this.state.Showing) return;
+        this.setState({ Show: true, Showing: true });
+        setTimeout(() => {
+            this.setState({ Show: false, Showing: false, toastMsg:'' });
+        }, 2000);
+    };
+
 
 
     render() {
         const { pageSize, pageNum, displayItems, productsList, dummyProductsList, totalProducts, showLoader,
-            cartLoader, fromBrands, categories, selectedCat, productFilters } = this.state;
+            cartLoader, showCategoryFilter, categories, selectedCat, productFilters,toastMsg } = this.state;
         return (
             <Fragment>
                 <Toast ref={this.toastRef} />
                 <div className="p-grid maindiv" >
                     <div className="p-col-2 p-mt-6">
-                        {fromBrands ?
+                        {showCategoryFilter ?
                             <div className="p-shadow-1">
                                 <div className='subcat-list-item'>
                                     <h2 style={{ padding: 10, textAlign: 'center', fontWeight: 600, color: appTheme.logoTextColor }}>
@@ -233,17 +260,12 @@ class ProductsList extends React.Component {
                             </div> :
                             <div className="p-shadow-1">
                             <div className='subcat-list-item'>
-                                <h2 style={{ padding: 10, textAlign: 'center', fontWeight: 600, color: appTheme.logoTextColor }}>
+                                <h2 style={{ padding: 10, textAlign: 'center', fontWeight: 600, color: appTheme.logoTextColor,textTransform:'capitalize' }}>
                                     {productFilters.length !== 0 && productFilters[0].name}
                             </h2>
                             </div>
-                            <div className='subcat-list-item' onClick={this.getAllProductsBrand.bind(this)}>
-                                <h4 style={{ padding: 6, textAlign: 'center', color: (selectedCat) ? appTheme.dark2 : appTheme.logoTextColor }}>
-                                    All
-                                     </h4>
-                            </div>
                             {productFilters.length !== 0 && productFilters[0].data.map((brand) => (
-                                <div className='subcat-list-item' onClick={this.getProductsByBrandCat.bind(this, brand)}>
+                                <div className='subcat-list-item' onClick={this.getProductsByCatBrand.bind(this, brand)}>
                                     <h4 style={{ padding: 6, textAlign: 'center', color: appTheme.dark2 }}>
                                         {brand}
                                     </h4>
@@ -301,13 +323,16 @@ class ProductsList extends React.Component {
                                 defaultPageSize={pageSize}
                                 pageSizeOptions={displayItems}
                                 defaultCurrent={pageNum}
-                                onChange={(page, pageSize) => this.paginationBtn1(page, pageSize)}
+                                onChange={(page, pageSize) => this.paginationBtn(page, pageSize)}
                             />
                         </div>
                         }
                     </div>
                 </div>
                 {cartLoader && <AppSpinner />}
+                <ReactSnackBar Show={this.state.Show}>
+                    {toastMsg}
+                </ReactSnackBar>
             </Fragment>
         )
     }

@@ -8,7 +8,6 @@ import 'primeflex/primeflex.css';
 import configureStore from './store/configureStore';
 import {Provider} from "react-redux";
 
-
 import './App.css';
 import "antd/dist/antd.css";
 import userProfile from "./utils/UserProfile";
@@ -35,7 +34,10 @@ class App extends React.Component{
   render(){
     return(
       <Provider store={appStore}>
-        <Launch />
+       
+           <Launch />
+       
+       
       </Provider>
     )
   }

@@ -1,4 +1,6 @@
 import React, { Fragment } from 'react';
+
+import axios from 'axios';
 import { InputText } from 'primereact/inputtext';
 
 import OneButton from '../../components/OneButton';
@@ -20,6 +22,35 @@ class Payment extends React.Component {
 
   }
 
+
+  onSubmitPayment = () => {
+
+    var qs = require('qs');
+  axios.post(
+        'https://api.stripe.com/v1/tokens',
+        qs.stringify({
+          'card[number]': '4242424242424242',
+          'card[exp_month]': 6,
+          'card[exp_year]': 22,
+          'card[cvc]': '314',
+        }),
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: 'Bearer ' + 'sk_test_4eC39HqLyjWDarjtT1zdp7dc',
+          },
+        },
+      )
+      .then(response => {
+        // handle success
+        if (response.status == '200') {
+          console.log(response);
+          this.setState({cardtoken: response.data.id});
+        }
+      })
+   
+  }
 
 
 
@@ -76,7 +107,7 @@ class Payment extends React.Component {
               </span>
             </div>
             <OneButton
-
+              onClick={this.onSubmitPayment}
               buttonLabel={"Proceed to pay"}
               btnSize="large"
               btnShape="round"
@@ -85,6 +116,7 @@ class Payment extends React.Component {
 
               }}
             />
+            <a href="http://www.credit-card-logos.com/"><img alt="Credit Card Logos" title="Credit Card Logos" src="http://www.credit-card-logos.com/images/multiple_credit-card-logos-1/credit_card_logos_17.gif" width="235" height="35" border="0" /></a>
           </div>
 
         </div>

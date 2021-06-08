@@ -20,7 +20,7 @@
     top: 0;
     z-index: 9;
     width: 100% !important;
-    background: green !important;
+    background-image: linear-gradient(to right, #041E42 , #142977);
     border-bottom: 1px solid #eeeeee !important;
     display: flex;
     flex-direction: row;
@@ -70,6 +70,14 @@
     padding: 3px 5px 2px
 }
 
+.mobilemenu-header{
+    background-color: #f7f7f7;
+    padding: 8px;
+    font-weight: 600;
+    font-size: 20px;
+    border-bottom: 1px solid #eeeeee !important;
+}
+
 .menu-list-btn-item{
     border-bottom: 1px solid #eeeeee !important;
     padding: 8px !important;
@@ -96,11 +104,7 @@
 }
 
 
-.navbar-btn-text{
-    color: #fff;
-    font-size: 16px;
-    font-weight: 500;
-}
+
 
 .navbar-brand{
     color: #FFF;
@@ -108,6 +112,12 @@
     font-weight: 600;
     text-align: center;
     padding-top: 12px;
+}
+
+.mobile-navbar-brand{
+    color: #000;
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .navbar-brand:hover{
@@ -134,44 +144,6 @@
     margin-left: 16px;
     margin-right: 16px;
 }
-/* .navbar-btn-text{
-    color: #fff;
-    padding-bottom: 16px;
-    border-bottom: 4px solid transparent;
-    text-decoration: none;
-
-} */
-
-h2.test-text {
-    color: #142977;
-    padding: 8px;
-    font-size: 20px;
-    line-height: 1;
-    width: 450px;
-    text-align: center;
-    position: absolute;
-    top:0;
-    align-self: center;
-    z-index: 2;
-    cursor: pointer;
-    font-weight: 600;
-  }
-  
-  h2.test-text:before {
-    content: "";
-    font-weight: 600;
-    position: absolute;
-    border: none;
-    top: 0;
-    bottom: -50%;
-    left: 0;
-    right: 0;
-    z-index: -1;
-    background: #fff;
-    transform: perspective(20em) rotateX(-45deg);
-    transform-origin: top;
-    border: 4px solid #142977 !important;
-  }
 
 
   .p-overlaypanel{
@@ -215,18 +187,221 @@ h2.test-text {
     border: none !important;
 }
 
-  .selectVechile{
-    color: #FF891E;
-    font-size: 18px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 12px;
-  }
+  
 
   .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button{
       background: #FF891E;
       border-color: #FF891E !important;
       border-radius: 0px !important;
+  }
+
+  .desktop-navbar-icon{
+      align-items: center;
+      justify-content: center;
+      margin-left: 6px;
+      height: 40px;
+  }
+
+
+
+  @media only screen and (min-width:321px) and (max-width:768px) {
+    .desktop-navbar-usericon{
+        font-size: 20px;
+        color: #FFF;
+        margin-right: 4px;
+    }
+    .desktop-navbar-carticon{
+        font-size: 24px;
+        color: #FFF;
+        margin-right: 4px;
+    }
+    .desktop-navbar-text{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 16px;
+    }
+    .desktop-navbar-subtext{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 10px;
+    }
+    .desktop-navbar-carttext{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .navbar-btn-text{
+        color: #fff;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .selectVechile{
+        color: #FF891E;
+        font-size: 14px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 12px;
+    }
+    .desktop-navbar-caricon{
+        font-size: 22px;
+        color: #FF891E;
+        margin-right: 10px;
+    }
+  }
+
+  @media only screen and (min-width:769px) and (max-width:1024px) {
+    .desktop-navbar-usericon{
+        font-size: 22px;
+        color: #FFF;
+        margin-right: 8px;
+    }
+    .desktop-navbar-carticon{
+        font-size: 28px;
+        color: #FFF;
+        margin-right: 6px;
+    }
+    .desktop-navbar-text{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 14px;
+    }
+    .desktop-navbar-subtext{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 12px;
+    }
+    .desktop-navbar-carttext{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .navbar-btn-text{
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .selectVechile{
+        color: #FF891E;
+        font-size: 16px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 12px;
+    }
+    .desktop-navbar-caricon{
+        font-size: 22px;
+        color: #FF891E;
+        margin-right: 12px;
+    }
+  }
+
+  @media only screen and (min-width:1025px){
+       
+    .desktop-navbar-usericon{
+        font-size: 22px;
+        color: #FFF;
+        margin-right: 12px;
+    }
+    .desktop-navbar-carticon{
+        font-size: 30px;
+        color: #FFF;
+        margin-right: 8px;
+    }
+
+    .desktop-navbar-text{
+    color: #FFF;
+    margin-bottom: 0px;
+    font-size: 16px;
+    }
+    .desktop-navbar-subtext{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 12px;
+    }
+    .desktop-navbar-carttext{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .navbar-btn-text{
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .selectVechile{
+        color: #FF891E;
+        font-size: 18px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 12px;
+    }
+    .desktop-navbar-caricon{
+        font-size: 24px;
+        color: #FF891E;
+        margin-right: 12px;
+    }
+
+  }
+
+  @media only screen and (min-width:1440px){
+       
+    .desktop-navbar-usericon{
+        font-size: 28px;
+        color: #FFF;
+        margin-right: 14px;
+    }
+    .desktop-navbar-carticon{
+        font-size: 34px;
+        color: #FFF;
+        margin-right: 8px;
+    }
+
+    .desktop-navbar-text{
+    color: #FFF;
+    margin-bottom: 0px;
+    font-size: 18px;
+    }
+    .desktop-navbar-carttext{
+        color: #FFF;
+        margin-bottom: 0px;
+        font-size: 20px;
+        font-weight: 500;
+    }
+    .navbar-btn-text{
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+    }
+    .selectVechile{
+        color: #FF891E;
+        font-size: 18px;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 12px;
+    }
+    .desktop-navbar-caricon{
+        font-size: 24px;
+        color: #FF891E;
+        margin-right: 12px;
+    }
+
+  }
+
+  @media only screen and (max-width: 768px) {
+    .desktop-navbar-icon{
+        align-items: center;
+        justify-content: center;
+        margin-left: 6px;
+        height: 25px;
+    }
   }

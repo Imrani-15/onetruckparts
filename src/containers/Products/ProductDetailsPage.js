@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react';
 
 
-import { Badge } from 'primereact/badge';
+import { connect } from "react-redux";
 import { Galleria } from 'primereact/galleria';
 import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Skeleton } from 'primereact/skeleton';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import ReactImageZoom from 'react-image-zoom';
 
 import serviceCall from '../../utils/Services';
@@ -15,12 +17,14 @@ import noReview from '../../assets/noreview.jpg';
 import OneButton from '../../components/OneButton';
 import AppSpinner from '../../components/AppSpinner';
 
+import ReactSnackBar from "../../components/ReactSnackBar";
+import userProfile from '../../utils/UserProfile';
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
-import { isNotEmpty, showToastMessage } from '../../utils/Utils';
+import { isNotEmpty } from '../../utils/Utils';
 
 import './ProductDetailsPage.css';
-import { Empty } from 'antd';
+
 
 class ProductDetailsPage extends React.Component {
     constructor(props) {
@@ -32,12 +36,16 @@ class ProductDetailsPage extends React.Component {
             productDetails: {},
             productImages: [],
             fitmentList: [],
+            productFitmentList:[],
             hidden: false,
             quantities: [
                 { name: 1, value: 1 },
                 { name: 2, value: 2 },
                 { name: 3, value: 3 }
-            ]
+            ],
+            Show: false,
+            Showing: false,
+            toastMsg:''
         }
         this.productDetails = React.createRef();
         this.Features = React.createRef();
@@ -82,6 +90,23 @@ class ProductDetailsPage extends React.Component {
                 if (!res.error) {
                     let productImages = res.data && res.data.files.toString().split(",").filter(x => !x.includes("pdf"))
                     this.setState({ productDetails: res.data, productImages: productImages, showLoader: false })
+                    this.getProductFitment(res.data.fitmentOsku);
+                } else {
+
+                }
+            })
+            .catch((error) => {
+            })
+    }
+
+    getProductFitment = (fitmentOsku) => {
+        let restUrl = `${PRODUCT_BASE_URL}prod/fitments`
+        serviceCall({
+            "fitmentOsku" :fitmentOsku
+        }, restUrl, 'POST')
+            .then((res) => {
+                if (!res.error) {
+                    this.setState({ productFitmentList: res.data.data })
                 } else {
 
                 }
@@ -97,8 +122,11 @@ class ProductDetailsPage extends React.Component {
             serviceCall({}, restUrl, 'GET')
                 .then((res) => {
                     if (!res.error) {
-                        showToastMessage(this.toastRef, 'success', '', `Product "${product.title}" added to cart`);
-                        this.setState({ cartLoader: false })
+                        
+                        this.setState({ cartLoader: false, toastMsg:`Product  added to the cart.` },()=>{
+                            this.showToast();
+                        })
+                        this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
                     } else {
                         this.setState({ cartLoader: false })
                     }
@@ -110,6 +138,44 @@ class ProductDetailsPage extends React.Component {
 
 
     }
+
+    saveLater = (product) => {
+        let userData = userProfile.getUserObj();
+        if (userData && userData.emailId) {
+            let restUrl = `${PRODUCT_BASE_URL}account/saveforlater`;
+            let inpobj = {
+                "emailId": userData.emailId,
+                "osku": product.osku
+            }
+            serviceCall(inpobj, restUrl, 'POST')
+                .then((res) => {
+                    if (!res.error) {
+                        this.setState({ cartLoader: false, toastMsg:`Product  added to the wishlist` },()=>{
+                            this.showToast();
+                        })
+                    } else {
+                        this.setState({ cartLoader: false })
+                    }
+                })
+                .catch((error) => {
+                    this.setState({ cartLoader: false })
+                })
+        } else {
+            this.setState({ cartLoader: false, toastMsg:`Please login to add to the wishlist` },()=>{
+                this.showToast();
+            })
+        }
+
+
+    }
+
+    showToast = () => {
+        if (this.state.Showing) return;
+        this.setState({ Show: true, Showing: true });
+        setTimeout(() => {
+            this.setState({ Show: false, Showing: false, toastMsg:'' });
+        }, 2000);
+    };
 
 
 
@@ -144,7 +210,7 @@ class ProductDetailsPage extends React.Component {
 
     render() {
         const { selectedQuantity, quantities, productDetails, productImages,
-            showLoader, cartLoader, fitmentList } = this.state;
+            showLoader, cartLoader, fitmentList, toastMsg, productFitmentList } = this.state;
         const { userFitmentData } = this.props;
 
         return (
@@ -231,7 +297,7 @@ class ProductDetailsPage extends React.Component {
                                 }}
                             />
                             <OneButton
-                                onClick={() => this.addToCart(productDetails)}
+                                onClick={() => this.saveLater(productDetails)}
                                 buttonLabel={"Save Later"}
                                 btnShape="round"
                                 btnSize="large"
@@ -286,6 +352,25 @@ class ProductDetailsPage extends React.Component {
                                     ))}
                             </ul>
                         </section>
+                        <section>
+                        <div className="product_navbar_title">Compatibility</div>
+                        <DataTable 
+                                emptyMessage={
+                                    <div style={{display:'grid', justifyContent:'center'}}>
+                                        {/* <img src={emptyCart} alt="cartEmpty" style={{height:160,alignSelf:'center'}} /> */}
+                                        <h3 style={{textAlign:'center', color:appTheme.logoTextColor,fontWeight: '800',}}>No Fitment Data</h3>
+                                    </div>
+                                }
+                                loading={false}
+                                value={productFitmentList}>
+                                <Column field="company" header="Company" />
+                                <Column field="modelname" header="Model name" />
+                                <Column field="exppartno" header="Part no" />
+                                <Column field="year" header="Year" />
+                                <Column field="bodytype" header="Body Type" />
+                                <Column field="engbase" header="Engine base" />
+                            </DataTable>
+                        </section>
                         <section ref={this.Reviews}>
                             <div className="product_navbar_title">Reviews</div>
                             <div style={{ display: 'flex', flexDirection:'column', justifyContent: 'center',alignItems:'center' }}>
@@ -301,13 +386,31 @@ class ProductDetailsPage extends React.Component {
                     </div>}
 
                 {cartLoader && <AppSpinner />}
+                <ReactSnackBar Show={this.state.Show}>
+                    {toastMsg}
+                </ReactSnackBar>
             </Fragment>
         )
     }
 }
 
 
-export default ProductDetailsPage;
+function mapStateToProps(state) {
+    return {
+
+    }
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        setUserData: obj => {
+            dispatch({ type: "SET_APP_DATA", data: obj });
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetailsPage);
+
+
 
 
 

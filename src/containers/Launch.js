@@ -52,7 +52,7 @@ const MainRoute = withRouter(({location}) =>{
                     <Route path="/signup" component={Register} />
 
                     <Route path="/brands" component={Brands} />
-                    <Route path="/products/category:category" component={Products} />
+                    <Route path="/products/category:type" component={Products} />
                     <Route path="/search/prd:val" component={SerchProducts} />
                     <Route path="/productdetails/osku:osku"  component={ProductDetails}/>
                     <Route path="/cart" component={Cart} />

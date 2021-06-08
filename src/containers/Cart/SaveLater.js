@@ -49,7 +49,7 @@ class SaveLater extends React.Component {
 
     addProductToCart(product){
         this.setState({loader:true},()=>{
-            let restUrl = `${PRODUCT_BASE_URL}cart/add/${product.osku}` ;
+            let restUrl = `${PRODUCT_BASE_URL}cart/add/${product.osku}/1` ;
                 serviceCall({}, restUrl, 'GET')
                     .then((res) => {
                         if (!res.error) {
@@ -114,7 +114,6 @@ class SaveLater extends React.Component {
                                 emptyMessage="No Items in wishlist."
                                 loading={loader}
                                 value={saveLaterList}>
-                                <Column field="category" header="Category" />
                                 <Column header="Image" 
                                         body={imageBodyTemplate} 
                                             />

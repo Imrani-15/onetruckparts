@@ -15,14 +15,20 @@ class Footer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            matches: window.matchMedia("(min-width: 768px)").matches
         }
+    }
+
+    componentDidMount(){
+        const handler = e => this.setState({matches: e.matches});
+        window.matchMedia("(min-width: 768px)").addListener(handler);
     }
 
     render() {
 
         return (
             <Fragment>
+                {this.state.matches &&
                 <div className="footer-main">
                     <div className="p-grid">
                         <div className="p-col-4 footer-col">
@@ -92,7 +98,7 @@ class Footer extends React.Component {
                         <img src={twitter} height="38px" style={{ objectFit: 'contain',marginRight:18}} />
                     </div>
                 </div>
-
+                }
 
             </Fragment>
         )

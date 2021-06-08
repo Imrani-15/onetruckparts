@@ -8,13 +8,12 @@ import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 
+import ReactSnackBar from "../../components/ReactSnackBar";
 import emptyCart from '../../assets/emptycart.jpg';
 import OneButton from '../../components/OneButton';
 import {showToastMessage} from '../../utils/Utils';
 import serviceCall from '../../utils/Services';
-import { appTheme, PRODUCT_BASE_URL , cartProducts} from '../../utils/Constants';
-
-import  ImageComponent from '../../components/ImageComponent';
+import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
 import './CartPage.css';
 
@@ -24,7 +23,10 @@ class CartPage extends React.Component {
         this.state = {
             cartList:[],
             orderTotal:0,
-            cartLoader:true
+            cartLoader:true,
+            Show: false,
+            Showing: false,
+            toastMsg:''
         }
         this.toastRef = React.createRef();
     }
@@ -56,8 +58,9 @@ class CartPage extends React.Component {
                 serviceCall({}, restUrl, 'GET')
                     .then((res) => {
                         if (!res.data.error) {
-                            showToastMessage(this.toastRef,'success', '', (type === 'ADD') ? `Product "${product.title}" added to cart` : `Product "${product.title}" removed from cart` );
-                            this.setState({cartLoader:false})
+                            this.setState({cartLoader:false,toastMsg:(type === 'ADD') ? `Product added to the cart.` : `Product removed from the cart.`},()=>{
+                                this.showToast()
+                            })
                             this.getCartProducts();
                         } else {
                             showToastMessage(this.toastRef,'error', '', res.data.message );
@@ -79,9 +82,10 @@ class CartPage extends React.Component {
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
                 if (!res.error) {
-                    showToastMessage(this.toastRef,'error', '', `Product "${rowData.title}" deleted from cart`);
-                    this.setState({cartList: res.data.cart, orderTotal: res.data.ordertotal,cartLoader:false});
-                    this.props.setUserData({cartcount:res.data.cart.length,orderTotal:res.data.ordertotal})
+                    this.setState({cartList: res.data.cart, orderTotal: res.data.ordertotal,cartLoader:false,toastMsg:'Product removed from the cart.'},()=>{
+                        this.showToast();
+                    });
+                    this.props.setUserData({cartcount:res.data.cartcount,orderTotal:res.data.ordertotal})
                 } else {
                     this.setState({cartLoader:false})
                 }
@@ -92,13 +96,22 @@ class CartPage extends React.Component {
         })
     }
 
+    showToast = () => {
+        if (this.state.Showing) return;
+        this.setState({ Show: true, Showing: true });
+        setTimeout(() => {
+            this.setState({ Show: false, Showing: false, toastMsg:'' });
+        }, 2000);
+    };
+
+
 
     render(){
-        const {cartList,orderTotal, cartLoader} = this.state;
+        const {cartList,orderTotal, cartLoader,toastMsg} = this.state;
         const imageBodyTemplate = (rowData) => {
             return <img src={`${rowData.image}`} 
                     onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'} 
-                    alt={rowData.image} style={{height:80}} />;
+                    alt={rowData.image} style={{height:90,width:90, objectFit:'contain'}} />;
         }
         return(
                 <Fragment>
@@ -118,7 +131,6 @@ class CartPage extends React.Component {
                                 }
                                 loading={cartLoader}
                                 value={cartList}>
-                                <Column field="category" header="Category" />
                                 <Column header="Image" 
                                         body={imageBodyTemplate} 
                                             />
@@ -155,7 +167,7 @@ class CartPage extends React.Component {
                                         Sub Total
                                     </div>
                                     <div className="cartdetailsText">
-                                        $ {orderTotal.toFixed(2)}
+                                        $ {orderTotal}
                                     </div>
                                 </div>
                                 <Divider />
@@ -164,7 +176,7 @@ class CartPage extends React.Component {
                                         Total
                                     </div>
                                     <div className="totalText">
-                                        $ {orderTotal.toFixed(2)}
+                                        $ {orderTotal}
                                     </div>
                                 </div>
                                 <OneButton 
@@ -179,6 +191,9 @@ class CartPage extends React.Component {
 
                         </div>
                      </div>
+                     <ReactSnackBar Show={this.state.Show}>
+                    {toastMsg}
+                </ReactSnackBar>
                 </Fragment>
         )
     }

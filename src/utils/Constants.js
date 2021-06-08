@@ -19,6 +19,11 @@ export const orderStatus = {
   INPROGRESS : "inprogress"
 }
 
+export const deviceWidth = {
+  MOBILE : 424,
+  TAB: 767,
+  LAPTOP: 1023
+}
 export const appTheme = {
 
     primaryColor:'#041E42',
