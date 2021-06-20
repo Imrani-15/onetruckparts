@@ -11,7 +11,8 @@ import { Button } from 'primereact/button';
 import ReactSnackBar from "../../components/ReactSnackBar";
 import emptyCart from '../../assets/emptycart.jpg';
 import OneButton from '../../components/OneButton';
-import {showToastMessage} from '../../utils/Utils';
+import {updateProductToCart} from '../../utils/commonService';
+import userProfile from '../../utils/UserProfile';
 import serviceCall from '../../utils/Services';
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
@@ -32,7 +33,17 @@ class CartPage extends React.Component {
     }
 
     componentWillMount(){
-        this.getCartProducts();
+        this.setCartProducts();
+    }
+
+    setCartProducts(){
+        if(this.props.loginData && this.props.loginData.accessToken){
+            this.getCartProducts();
+        }else{
+            let guestCart = userProfile.getCart();
+            let guestCartDetails = userProfile.getcartDetails();
+            this.setState({cartList:guestCart && guestCart.length!==0 ? guestCart : [],cartLoader:false,orderTotal:guestCartDetails && guestCartDetails.orderTotal ? guestCartDetails.orderTotal : 0})
+        }
     }
 
     getCartProducts = () => {
@@ -40,7 +51,7 @@ class CartPage extends React.Component {
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
                 if (!res.error) {
-                    this.props.setUserData({cartcount:res.data.cart.length,orderTotal:res.data.ordertotal})
+                    this.props.setUserData({cartcount:res.data.cartcount,orderTotal:res.data.ordertotal})
                     this.setState({ cartList: res.data.cart, orderTotal: res.data.ordertotal, cartLoader:false })
                 } else {
 
@@ -54,21 +65,20 @@ class CartPage extends React.Component {
 
     updateProductFromCart(product,type){
         this.setState({cartLoader:true},()=>{
-            let restUrl = (type === 'ADD') ? `${PRODUCT_BASE_URL}cart/add/${product.osku}/${parseInt(product.quantity)+1}` : `${PRODUCT_BASE_URL}cart/remove/${product.osku}`;
-                serviceCall({}, restUrl, 'GET')
-                    .then((res) => {
+                let quantity = (type === 'ADD') ? parseInt(product.quantity)+1 : parseInt(product.quantity)-1;
+                let toastMsg = (type === 'ADD') ? `Product added to the cart.` : `Product removed from the cart.`;
+                updateProductToCart(product,quantity, type).then((res)=>{
                         if (!res.data.error) {
-                            this.setState({cartLoader:false,toastMsg:(type === 'ADD') ? `Product added to the cart.` : `Product removed from the cart.`},()=>{
-                                this.showToast()
+                            this.setState({ cartLoader: false, toastMsg:toastMsg },()=>{
+                                this.showToast();
                             })
-                            this.getCartProducts();
+                            this.setCartProducts();
+                            this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
                         } else {
-                            showToastMessage(this.toastRef,'error', '', res.data.message );
-                            this.setState({cartLoader:false})
+                            this.setState({ cartLoader: false, toastMsg:res.data.message },()=>{
+                                this.showToast();
+                            })
                         }
-                    })
-                    .catch((error) => {
-                        this.setState({cartLoader:false})
                     })
         })
     }
@@ -76,22 +86,20 @@ class CartPage extends React.Component {
 
 
 
-    deleteProductFromCart(rowData,row){
+    deleteProductFromCart(product){
         this.setState({cartLoader:true},()=>{
-        let restUrl = `${PRODUCT_BASE_URL}cart/delete/${row.rowIndex}`
-        serviceCall({}, restUrl, 'GET')
-            .then((res) => {
-                if (!res.error) {
-                    this.setState({cartList: res.data.cart, orderTotal: res.data.ordertotal,cartLoader:false,toastMsg:'Product removed from the cart.'},()=>{
+            updateProductToCart(product,0).then((res)=>{
+                if (!res.data.error) {
+                    this.setState({ cartLoader: false, toastMsg:'Product removed from the cart.' },()=>{
                         this.showToast();
-                    });
-                    this.props.setUserData({cartcount:res.data.cartcount,orderTotal:res.data.ordertotal})
+                    })
+                    this.setCartProducts();
+                    this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
                 } else {
-                    this.setState({cartLoader:false})
+                    this.setState({ cartLoader: false, toastMsg:res.data.message },()=>{
+                        this.showToast();
+                    })
                 }
-            })
-            .catch((error) => {
-                this.setState({cartLoader:false})
             })
         })
     }
@@ -203,7 +211,7 @@ class CartPage extends React.Component {
 
 function mapStateToProps(state) {
     return {
-       
+        loginData: state.userLoginData,
     }
 }
 function mapDispatchToProps(dispatch){

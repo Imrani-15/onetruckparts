@@ -11,19 +11,13 @@ const Slider = ({ data, goToBrandsPage }) => {
         {data.map((item)=>{
         return(
           <div style={{display:'flex'}} key={item.id}>
-              <img src={item.imgurl}  style={{height:'90%',width:'120%',}}
+              <img src={item.imgurl}  style={{height:'90%',width:'120%'}} alt={item.id}
                 onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'} />
           </div>
           
         )
         })}
        </Carousel>
-      {/* <div class="overlay">
-        <div style={{alignSelf:'flex-end', fontSize:16, fontWeight:'500'}} onClick={() => goToBrandsPage()}>
-          Shop By Brand
-        </div>
-      </div> */}
-
   </div>
  
   );

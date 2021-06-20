@@ -1,7 +1,5 @@
 import React from "react";
 import { Skeleton } from 'primereact/skeleton';
-import placeholder from '../../assets/placeholder.png'
-import { Tooltip } from 'primereact/tooltip';
 import { Button } from 'primereact/button';
 import OneButton from '../OneButton';
 
@@ -15,8 +13,6 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
     return (
         <div className="product_main">
            <div className="product_header">
-                {/* <img src={placeholder}  className="product_image" 
-                />  */}
                   <Skeleton size="14rem"></Skeleton>
            </div>
          
@@ -33,7 +29,7 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
     return (
         <div className="product_main">
            <div className="product_header" onClick={() => openProductDetail(product)}>
-                <img src={product.image}  className="product_image" 
+                <img src={product.image}  className="product_image"  alt={product.title}
                 onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'}
                 /> 
            </div>
@@ -60,8 +56,6 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
                         ${product.price}
                     </div>
                     <Button icon="pi pi-heart" className="p-button-rounded p-button-sm"  
-                    //tooltip="Save to later"
-                   // tooltipOptions={{position: 'bottom'}}
                     onClick={()=> saveLater(product)}
                     style={{backgroundColor:appTheme.dark6,
                         borderColor:appTheme.dark6}}/>

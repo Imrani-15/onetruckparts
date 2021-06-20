@@ -18,6 +18,7 @@ import OneButton from '../../components/OneButton';
 import AppSpinner from '../../components/AppSpinner';
 
 import ReactSnackBar from "../../components/ReactSnackBar";
+import {updateProductToCart, productSaveLater} from '../../utils/commonService';
 import userProfile from '../../utils/UserProfile';
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
@@ -118,22 +119,16 @@ class ProductDetailsPage extends React.Component {
 
     addToCart = (product) => {
         this.setState({ cartLoader: true }, () => {
-            let restUrl = `${PRODUCT_BASE_URL}cart/add/${product.osku}/${this.state.selectedQuantity}`
-            serviceCall({}, restUrl, 'GET')
-                .then((res) => {
-                    if (!res.error) {
-                        
-                        this.setState({ cartLoader: false, toastMsg:`Product  added to the cart.` },()=>{
-                            this.showToast();
-                        })
-                        this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
-                    } else {
-                        this.setState({ cartLoader: false })
-                    }
-                })
-                .catch((error) => {
+            updateProductToCart(product,this.state.selectedQuantity).then((res)=>{
+                if (!res.error) {
+                    this.setState({ cartLoader: false, toastMsg:`Product  added to the cart.` },()=>{
+                        this.showToast();
+                    })
+                    this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
+                } else {
                     this.setState({ cartLoader: false })
-                })
+                }
+            })
         })
 
 
@@ -142,24 +137,17 @@ class ProductDetailsPage extends React.Component {
     saveLater = (product) => {
         let userData = userProfile.getUserObj();
         if (userData && userData.emailId) {
-            let restUrl = `${PRODUCT_BASE_URL}account/saveforlater`;
-            let inpobj = {
-                "emailId": userData.emailId,
-                "osku": product.osku
-            }
-            serviceCall(inpobj, restUrl, 'POST')
-                .then((res) => {
-                    if (!res.error) {
-                        this.setState({ cartLoader: false, toastMsg:`Product  added to the wishlist` },()=>{
-                            this.showToast();
-                        })
-                    } else {
-                        this.setState({ cartLoader: false })
-                    }
-                })
-                .catch((error) => {
+            productSaveLater(userData.emailId, product).then((res) => {
+                if (!res.error) {
+                    this.setState({ cartLoader: false, toastMsg: `Product  added to wishlist` }, () => {
+                        this.showToast();
+                    })
+                } else {
                     this.setState({ cartLoader: false })
-                })
+                }
+            }).catch((error) => {
+                this.setState({ cartLoader: false })
+            })
         } else {
             this.setState({ cartLoader: false, toastMsg:`Please login to add to the wishlist` },()=>{
                 this.showToast();
@@ -275,7 +263,7 @@ class ProductDetailsPage extends React.Component {
                                 fontSize: 26,
                                 fontWeight: '700'
                             }}>
-                                ${productDetails.usd_retailprice}
+                                ${parseFloat(productDetails.usd_retailprice).toFixed(2)}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'row', marginTop: 20, alignItems: 'center' }}>
                                 <div style={{ fontSize: 16, fontWeight: '500', lineHeight: '22px', color: appTheme.dark2 }}>

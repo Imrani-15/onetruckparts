@@ -464,7 +464,7 @@
 // export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
 
 
-import React, { Fragment } from 'react';
+import React from 'react';
 
 import DesktopNavbar from './DesktopNavbar';
 

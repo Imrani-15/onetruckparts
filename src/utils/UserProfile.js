@@ -1,6 +1,9 @@
 class userProfile {
 
     static userobj = {};
+    static cart = [];
+    static garage= [];
+    static cartdet = {};
     static navobj = {};
     static orderItObj = {};
     static ordprinObj = {}
@@ -16,7 +19,6 @@ class userProfile {
             orderItObj = JSON.parse(orderItObj)
         }
         this.orderItObj = orderItObj
-        console.log(this.orderItObj)
         return this.orderItObj
         
     }
@@ -52,16 +54,57 @@ class userProfile {
         }
     }
 
-    static setUserToken(token){
-        window.localStorage.setItem('token', token);
+    static setCart(cart){
+        this.cart = cart;
+        window.localStorage.setItem('cart', JSON.stringify(cart));
     }
 
-    static getUserToken(){
-        let accessToken = window.localStorage.getItem('token');
-        if(accessToken){
-            return accessToken;
-        }else{
-            return null
+    static getCart(){
+        if(this.cart && this.cart.length !==0){
+            return this.cart;
+        }else {
+            let cart = window.localStorage.getItem('cart');
+            if(cart){
+                cart = JSON.parse(cart)
+            }
+            this.cart = cart || [];
+            return cart;
+        }
+    }
+
+    static setGarage(garage){
+        this.garage = garage;
+        window.localStorage.setItem('garage', JSON.stringify(garage));
+    }
+
+    static getGarage(){
+        if(this.garage && this.garage.length !==0){
+            return this.garage;
+        }else {
+            let garage = window.localStorage.getItem('garage');
+            if(garage){
+                garage = JSON.parse(garage)
+            }
+            this.garage = garage || [];
+            return garage;
+        }
+    }
+
+    static setcartDetails(details){
+        this.cartdet = details;
+        window.localStorage.setItem('cartdetails', JSON.stringify(details));
+    }
+
+    static getcartDetails(){
+        if(this.cartdet && this.cartdet.cartcount){
+            return this.cartdet;
+        }else {
+            let cartdet = window.localStorage.getItem('cartdetails');
+            if(cartdet){
+                cartdet = JSON.parse(cartdet)
+            }
+            this.cartdet = cartdet || null;
+            return cartdet;
         }
     }
 

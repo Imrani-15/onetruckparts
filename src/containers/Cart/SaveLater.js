@@ -10,9 +10,9 @@ import { Button } from 'primereact/button';
 import OneButton from '../../components/OneButton';
 import {showToastMessage} from '../../utils/Utils';
 import serviceCall from '../../utils/Services';
-import { appTheme, PRODUCT_BASE_URL , cartProducts} from '../../utils/Constants';
-
-import  ImageComponent from '../../components/ImageComponent';
+import ReactSnackBar from "../../components/ReactSnackBar";
+import {updateProductToCart} from '../../utils/commonService';
+import { PRODUCT_BASE_URL } from '../../utils/Constants';
 
 import './CartPage.css';
 
@@ -21,7 +21,10 @@ class SaveLater extends React.Component {
         super(props);
         this.state = {
             saveLaterList:[],
-            loader:true
+            loader:true,
+            Show: false,
+            Showing: false,
+            toastMsg:''
         }
         this.toastRef = React.createRef();
     }
@@ -49,21 +52,28 @@ class SaveLater extends React.Component {
 
     addProductToCart(product){
         this.setState({loader:true},()=>{
-            let restUrl = `${PRODUCT_BASE_URL}cart/add/${product.osku}/1` ;
-                serviceCall({}, restUrl, 'GET')
-                    .then((res) => {
-                        if (!res.error) {
-                            showToastMessage(this.toastRef,'success', '',`Product "${product.title}" added to cart` );
-                            this.setState({loader:false})
-                        } else {
-                            this.setState({loader:false})
-                        }
+            updateProductToCart(product,1).then((res)=>{
+                if (!res.data.error) {
+                    this.setState({ loader: false, toastMsg:'Product added to the cart.' },()=>{
+                        this.showToast();
                     })
-                    .catch((error) => {
-                        this.setState({loader:false})
+                    this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
+                } else {
+                    this.setState({ loader: false, toastMsg:res.data.message },()=>{
+                        this.showToast();
                     })
+                }
+            })
         })
     }
+
+    showToast = () => {
+        if (this.state.Showing) return;
+        this.setState({ Show: true, Showing: true });
+        setTimeout(() => {
+            this.setState({ Show: false, Showing: false, toastMsg:'' });
+        }, 2000);
+    };
 
 
 
@@ -79,8 +89,10 @@ class SaveLater extends React.Component {
         serviceCall(inpobj, restUrl, 'POST')
             .then((res) => {
                 if (!res.error) {
-                    showToastMessage(this.toastRef,'error', '', `Product "${rowData.title}" removed from wishlist`);
-                    this.setState({saveLaterList: res.data.savedProducts, loader:false});
+                    this.setState({ loader: false, toastMsg:'Product removed from wishlist.' },()=>{
+                        this.showToast();
+                    })
+                    this.getSaveLaterProducts()
                 } else {
                     this.setState({loader:false})
                 }
@@ -93,11 +105,11 @@ class SaveLater extends React.Component {
 
 
     render(){
-        const {saveLaterList,orderTotal, loader} = this.state;
+        const {saveLaterList,toastMsg, loader} = this.state;
         const imageBodyTemplate = (rowData) => {
             return <img src={`${rowData.image}`} 
                     onError={(e) => e.target.src='https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png'} 
-                    alt={rowData.image} style={{height:80}} />;
+                    alt={rowData.image} style={{height:90,width:90, objectFit:'contain'}} />;
         }
         return(
                 <Fragment>
@@ -142,6 +154,9 @@ class SaveLater extends React.Component {
 
                         </div>
                      </div>
+                     <ReactSnackBar Show={this.state.Show}>
+                         {toastMsg}
+                    </ReactSnackBar>
                 </Fragment>
         )
     }

@@ -37,7 +37,7 @@ class Footer extends React.Component {
                             <div className="p-mt-6">
                                 <div className="footer-title">Contact Us</div>
                                 <div className="footer-text p-mt-2">
-                                    <i className="pi pi-phone p-mr-4" style={{ color: appTheme.logoTextColor }} /> 180-9992-3457
+                                    <i className="pi pi-phone p-mr-4" style={{ color: appTheme.logoTextColor }} />  (888) 520-2490
                                 </div>
                                 <div className="footer-text p-mt-2">
                                     <i className="pi pi-envelope p-mr-4" style={{ color: appTheme.logoTextColor }} /> sales@oneauto.us
@@ -46,7 +46,7 @@ class Footer extends React.Component {
                         </div>
                         <div className="p-col-2 footer-col">
                             <div className="footer-title">Information</div>
-                            <Link className="footer-link">
+                            <Link className="footer-link" to={"/about-us"}>
                                 About Us
                                 </Link>
                             <Link className="footer-link">

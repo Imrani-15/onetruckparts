@@ -1,11 +1,10 @@
 import React, { Fragment } from 'react';
 
 import { connect } from "react-redux";
+import { Row, Col, Select, Input } from 'antd';
 import { Carousel } from 'primereact/carousel';
 import { Dialog } from 'primereact/dialog';
 import { Skeleton } from 'primereact/skeleton';
-
-
 
 import OneButton from '../../components/OneButton';
 import Slider from '../../components/Slider';
@@ -16,7 +15,9 @@ import truckimg1 from '../../assets/truckimg1.jpg';
 import truckimg2 from '../../assets/truckimg2.jpg';
 import truckimg3 from '../../assets/truckimg3.jpg';
 import ReactSnackBar from "../../components/ReactSnackBar";
-import { isNotEmpty, showToastMessage } from '../../utils/Utils';
+import userProfile from '../../utils/UserProfile';
+import { isNotEmpty } from '../../utils/Utils';
+import { updateProductToCart } from '../../utils/commonService';
 import { PRODUCT_BASE_URL, appTheme, deviceWidth } from '../../utils/Constants';
 
 
@@ -24,6 +25,7 @@ import { appStore } from '../../App';
 
 import './HomePage.css'
 
+const { Option } = Select;
 class HomePage extends React.Component {
 
 
@@ -38,8 +40,7 @@ class HomePage extends React.Component {
             showFeaturedProducts: true,
             Show: false,
             Showing: false,
-            toastMsg:'',
-            numVisible:5,
+            toastMsg: ''
         }
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
         this.responsiveOptions = [
@@ -68,20 +69,20 @@ class HomePage extends React.Component {
     }
 
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         window.removeEventListener("resize", this.updateWindowDimensions)
     }
 
-    updateWindowDimensions(){
-        let width =  window.innerWidth;
-        if(width > deviceWidth.LAPTOP){
-            this.setState({numVisible:5})
-        }else if(width > deviceWidth.TAB){
-            this.setState({numVisible:4})
-        }else{
-            this.setState({numVisible:2})
+    updateWindowDimensions() {
+        let width = window.innerWidth;
+        if (width > deviceWidth.LAPTOP) {
+            this.setState({ numVisible: 5 })
+        } else if (width > deviceWidth.TAB) {
+            this.setState({ numVisible: 4 })
+        } else {
+            this.setState({ numVisible: 2 })
         }
- 
+
     }
 
 
@@ -100,6 +101,8 @@ class HomePage extends React.Component {
             .catch((error) => {
             })
     }
+
+
 
     getSlider() {
         let sliders = [
@@ -142,22 +145,19 @@ class HomePage extends React.Component {
     }
 
     addToCart = (product) => {
-        let restUrl = `${PRODUCT_BASE_URL}cart/add/${product.osku}/1`
-        serviceCall({}, restUrl, 'GET')
-            .then((res) => {
-                if (!res.error) {
-                    this.setState({ showDilalog: false,toastMsg:`Product  added to cart...` },()=>{
-                        this.showToast();
-                    })
-                    
-                    this.props.setUserData({ cartcount: res.data.cartcount, orderTotal: res.data.ordertotal });
-                } else {
+        updateProductToCart(product, 1).then((resp) => {
+            if (!resp.data.error) {
+                this.setState({ showDilalog: false, toastMsg: `Product  added to the cart.` }, () => {
+                    this.showToast();
+                })
+                this.props.setUserData({ cartcount: resp.data.cartcount, orderTotal: resp.data.ordertotal });
+            } else {
+                this.setState({ showDilalog: false, toastMsg: resp.data.message }, () => {
+                    this.showToast();
+                })
+            }
 
-                }
-            })
-            .catch((error) => {
-
-            })
+        })
     }
 
     showToast = () => {
@@ -170,7 +170,7 @@ class HomePage extends React.Component {
 
 
     render() {
-        const { sliderList, featuredProducts, showDilalog, selectedPrd, showFeaturedProducts, dummyArray,toastMsg , numVisible} = this.state;
+        const { sliderList, featuredProducts, showDilalog, selectedPrd, showFeaturedProducts, dummyArray, toastMsg } = this.state;
         return (
             <Fragment>
                 <Slider data={sliderList} goToBrandsPage={this.goToBrandsPage.bind(this)} />
@@ -212,22 +212,22 @@ class HomePage extends React.Component {
                                         </div>
                                     </div> :
                                     <div className="carousel-featured-products">
-                                        <Carousel value={cat.items} numVisible={5} numScroll={2} responsiveOptions={this.responsiveOptions} id={"cat-carousel"} 
+                                        <Carousel value={cat.items} numVisible={5} numScroll={2} responsiveOptions={this.responsiveOptions} id={"cat-carousel"}
                                             itemTemplate={this.renderProductTemplate.bind(this)} header={<div className="cat-scoll-header">{cat.heading}</div>} />
                                     </div>}
                             </div>
                         ))}
                     </div>}
-                <Dialog visible={showDilalog}  closable={false} header={null}
+                <Dialog visible={showDilalog} closable={false} header={null}
                     onHide={() => this.closeDialog()} modal className="home-prd-dialog">
-                                                <div style={{ position: 'absolute', top: 16, left: 14, cursor: "pointer" }} onClick={() => this.closeDialog()}>
-                            <i className="pi pi-times" style={{ fontSize: 22, fontWeight: 'bold', color: appTheme.primaryColor }}></i>
-                        </div>
+                    <div style={{ position: 'absolute', top: 16, left: 14, cursor: "pointer",backgroundColor:'#fff' }} onClick={() => this.closeDialog()}>
+                        <i className="pi pi-times" style={{ fontSize: 22, fontWeight: 'bold', color: appTheme.primaryColor,padding: 4 }}></i>
+                    </div>
                     <div className="p-grid">
-                        <div className="p-col-12 p-md-12 p-lg-5 p-xl-4 p-col-align-center" style={{justifyContent:'center'}}>
+                        <div className="p-col-12 p-md-12 p-lg-5 p-xl-4 p-col-align-center" style={{ justifyContent: 'center' }}>
                             <img src={selectedPrd.image}
                                 onError={(e) => e.target.src = 'https://dublin.anglican.org/cmsfiles/placeholder.png'}
-                                alt={selectedPrd.title}  />
+                                alt={selectedPrd.title} />
                         </div>
 
                         <div className="p-col-12 p-md-12 p-lg-7 p-xl-8 p-col-align-center p-justify-center">
@@ -240,7 +240,7 @@ class HomePage extends React.Component {
                                 btnShape="round"
                                 buttonStyle={{
                                     fontSize: 16, width: 150, height: 40, marginRight: 10,
-                                    marginTop:4
+                                    marginTop: 4
 
                                 }}
                             />
@@ -250,7 +250,7 @@ class HomePage extends React.Component {
                                 btnSize="large"
                                 btnShape="round"
                                 buttonStyle={{
-                                    fontSize: 16, backgroundColor: appTheme.logoTextColor, marginTop:4,
+                                    fontSize: 16, backgroundColor: appTheme.logoTextColor, marginTop: 4,
                                     borderColor: appTheme.logoTextColor, width: 200, height: 40
 
                                 }}

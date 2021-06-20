@@ -224,3 +224,24 @@
         align-self: center;
     }
 }
+
+
+
+/* .home-fitment-search .ant-input-group .ant-input{
+    border-top-left-radius: 22px !important;
+    border-bottom-left-radius: 22px !important;
+    height: 44px !important;
+}
+
+.home-fitment-search .ant-input-group-addon {
+    background-color: transparent !important;
+    height: 44px !important;
+} */
+
+/* .ant-input-search > .ant-input-group > .ant-input-group-addon:last-child .ant-input-search-button {
+    background: #FF891E;
+    height: 44px !important;
+    border-color: #FF891E !important;
+    border-top-right-radius: 22px !important;
+    border-bottom-right-radius: 22px !important;
+} */

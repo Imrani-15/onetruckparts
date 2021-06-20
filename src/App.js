@@ -20,13 +20,19 @@ class App extends React.Component{
   constructor(props){
     super(props);
     let userObj = userProfile.getUserObj();
+    let cartDetails = userProfile.getcartDetails();
     if(userObj && userObj.emailId && userObj.accessToken){
        appStore.dispatch({type:'SET_LOGIN_DATA', data:userObj})
+    }
+    
+    if(cartDetails && cartDetails.cartcount && cartDetails.cartcount > 0){
+      console.log("Rajesh::::::");
+      appStore.dispatch({type:'SET_APP_DATA', data:cartDetails})
     }
   }
 
   componentDidMount(){
-  
+    
   }
 
   

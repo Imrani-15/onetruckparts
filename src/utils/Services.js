@@ -1,24 +1,30 @@
 import axios from 'axios';
 import userProfile from  './UserProfile';
 
-
 function getHeaders(){
     let userData = userProfile.getUserObj();
+    // onetruckparts --> true
+    // oneauto --> remove
+    // dev ---> false
+    let isProd = false
     let accessToken = userData && userData.accessToken ? userData.accessToken  : null;
     if(accessToken === null){
         return  {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+             "isprod": isProd
             },
-            withCredentials: true,
+         //   withCredentials: true,
+          
           }
     }else{
         return  {
             headers: {
               "Content-Type": "application/json",
-              'Authorization': `Bearer ${accessToken}` 
+              'Authorization': `Bearer ${accessToken}` ,
+              "isprod": isProd
             },
-            withCredentials: true,
+         //   withCredentials: true,
           }
     }
    

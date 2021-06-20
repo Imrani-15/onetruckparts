@@ -164,8 +164,8 @@
 // export default ReactSnackBar;
 
 
-import React, { Component } from "react";
-import styled, { css, withTheme } from "styled-components";
+import React from "react";
+import styled, { css } from "styled-components";
 import { CSSTransition } from "react-transition-group";
 import { PropTypes } from "prop-types";
 import autoIcon from '../assets/oneautoicon.png';

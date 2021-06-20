@@ -29,6 +29,8 @@ import CheckOut from './CheckOut/CheckOutPage';
 import HomeSettings from './Settings/HomeSettings';
 import PageNotFound from './Settings/PageNotFound';
 
+import AboutUs from './About/AboutUs';
+
 
 
 
@@ -60,6 +62,8 @@ const MainRoute = withRouter(({location}) =>{
                     <Route path="/checkout" component={CheckOut} />
                     <Route path="/my-orders" component={Orders} />
                     <Route path="/settings" component={HomeSettings} />
+
+                    <Route path="/about-us" component={AboutUs} />
                     <Route component={PageNotFound} />
                 </Switch>
                 {location.pathname !== "/login" && location.pathname !== "/signup" &&

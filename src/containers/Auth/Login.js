@@ -1,6 +1,7 @@
 import React from 'react';
 
 import firebase from 'firebase';
+import { connect } from "react-redux";
 import { Toast } from 'primereact/toast';
 import {Password} from 'primereact/password';
 import { Divider } from 'primereact/divider';
@@ -13,9 +14,9 @@ import AppSpinner from '../../components/AppSpinner';
 import {formValidation,emailValidation} from '../../utils/Utils';
 import logo from '../../assets/logo.png';
 import userProfile from '../../utils/UserProfile';
-import {appTheme} from  '../../utils/Constants';
-import { connect } from "react-redux";
+import {appTheme, PRODUCT_BASE_URL} from  '../../utils/Constants';
 
+import callSerivce from '../../utils/Services';
 import './Auth.css'
 
 class Login extends React.Component {
@@ -89,8 +90,24 @@ class Login extends React.Component {
                                 }
                                 userProfile.setUserObj(userData);
                                 this.props.setUserLoginData(userData)
-                                this.setState({loading:false})
-                                this.props.history.replace('/');
+                         
+            
+                                let guestCart = userProfile.getCart();
+                                if(guestCart && guestCart.length !==0){
+                                    let restUrl = `${PRODUCT_BASE_URL}cart/addGuestCart`;
+                                    callSerivce({cart:guestCart}, restUrl, 'POST')
+                                        .then((res) => {
+
+                                        })
+                                }
+
+                                setTimeout(() => {
+                                    this.setState({loading:false})
+                                    this.props.history.replace('/');
+                                }, 1000);
+                            
+                  
+
                     }else{
                         this.setState({loading:false});
                     }

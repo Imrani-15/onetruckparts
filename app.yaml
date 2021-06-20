@@ -16,8 +16,9 @@
 
 env: standard
 runtime: nodejs14
-service: onetruckpart
-#service : onetruck
+# oneauto -- oneauto.us
+# onetruckparts -- onetruckparts.com
+service: oneauto
 handlers:
   - url: /static
     secure: always
