@@ -202,6 +202,17 @@
       height: 40px;
   }
 
+  .fitment-dialog .p-dialog-header {
+    padding: 0rem !important;
+    background-color: transparent !important;
+    border-bottom: none;
+}
+
+.fitment-dialog .p-dialog-content{
+    padding: 0rem !important;
+    background-color: transparent !important;
+}
+
 
 
   @media only screen and (min-width:321px) and (max-width:768px) {
@@ -406,17 +417,18 @@
     }
   }
 
-.fitment-dialog .p-dialog-header {
-    padding: 0rem !important;
-    background-color: transparent !important;
-    border-bottom: none;
-}
 
-.fitment-dialog .p-dialog-content{
-    padding: 0rem !important;
-    background-color: transparent !important;
-}
 
 .ant-select:not(.ant-select-customize-input) .ant-select-selector{
     height: 44px !important;
 }
+
+/* .ant-input-group-addon:first-child{
+    border-top-left-radius:22px;
+    border-bottom-left-radius: 22px;
+}
+
+.ant-input-group-addon:last-child{
+    border-top-right-radius: 22px;
+    border-bottom-right-radius: 22px;
+} */

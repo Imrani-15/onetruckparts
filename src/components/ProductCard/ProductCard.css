@@ -1,11 +1,13 @@
 .product_main{
-    width: calc(33.33% - 16px) !important;
+    width: calc(25% - 14px) !important;
     margin: 6px;
     display: block;
     border-bottom: 1px solid #ccc;
     cursor: pointer;
     height: 520px;
 }
+
+
 
 .product_main:hover{
     box-shadow: 0 4px 8px 0 #ccc, 0 6px 20px 0 #ccc;
@@ -33,8 +35,8 @@
 }
 
 .product_title{
-    font-size: 20px;
-    line-height: 26px;
+    font-size: 18px;
+    line-height: 24px;
     font-weight: 700;
     color: rgb(51, 51, 51);
     overflow: hidden;
@@ -48,4 +50,70 @@
     font-size: 14px;
     line-height: 20px;
     color: rgb(51, 51, 51);
+}
+
+.product_price{
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.product_sub-footer{
+    height: 80px;
+}
+
+@media only screen and (max-width: 768px) {
+    .product_main{
+        width: 48% !important;
+        margin: 1px;
+        display: block;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+        height: 520px;
+    }
+    .product_title{
+        font-size: 16px;
+        line-height: 20px;
+        font-weight: 700;
+        color: rgb(51, 51, 51);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        -webkit-box-orient: vertical;
+    }
+}
+
+@media only screen and (max-width: 425px) {
+    .product_main{
+        width: 49% !important;
+        margin: 0px;
+        display: block;
+        border-bottom: 1px solid #ccc;
+        cursor: pointer;
+        height: 400px;
+    }
+    .product_title{
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 700;
+        color: rgb(51, 51, 51);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* number of lines to show */
+        -webkit-box-orient: vertical;
+    }
+    .product_image{
+        height: 120px;
+        width: 100%;
+        object-fit: contain;
+        align-self: center;
+    }
+    .product_sub-footer{
+        height: 70px;
+    }
+    .product_price{
+        font-size: 16px;
+        font-weight: 700;
+    }
 }

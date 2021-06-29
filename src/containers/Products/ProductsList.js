@@ -3,12 +3,14 @@ import React, { Fragment } from 'react';
 import { connect } from "react-redux";
 import { Divider } from 'primereact/divider';
 import { Toast } from 'primereact/toast';
+import { Checkbox } from 'primereact/checkbox';
 import { Paginator } from 'primereact/paginator';
+
 import serviceCall from '../../utils/Services';
 import noProductsFound from '../../assets/No_Product_Found.png';
 
 import { updateProductToCart, productSaveLater } from '../../utils/commonService';
-import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
+import { appTheme, PRODUCT_BASE_URL , deviceWidth} from '../../utils/Constants';
 import { isNotEmpty } from '../../utils/Utils';
 
 
@@ -24,39 +26,61 @@ class ProductsList extends React.Component {
         this.state = {
             paginationFirst: 0,
             pageNum: 0,
-            pageSize: 30,
+            pageSize: 24,
             totalProducts: 0,
             productsList: [],
-            dummyProductsList: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            displayItems: [30, 45, 60, 75, 90],
+            dummyProductsList: [1, 2, 3, 4, 5, 6, 7, 8],
+            displayItems: [24, 48, 72],
             showLoader: true,
             cartLoader: false,
             fromBrands: false,
             categories: [],
-            selectedCat: false,
             showCategoryFilter: false,
             selectedCategory: "",
+            filterName:"",
             productFilters: [],
+            selectedFilters:[],
             defaultType: "",
             Show: false,
             Showing: false,
-            toastMsg: ''
+            toastMsg: '',
+            isLargeDevice:true
         }
         this.toastRef = React.createRef();
-        this.updateCategory = true
+        this.updateCategory = true;
+        this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
     }
 
     componentWillMount() {
-        this.getCategory();
         window.scrollTo(0, 0);
+        window.addEventListener("resize", this.updateWindowDimensions);
         this.updateCategory = true;
         let brand = new URLSearchParams(this.props.location.search).get("brands");
         let checkBrand = isNotEmpty(brand) ? brand : false;
         let defaultType = this.props.match.params.type.replace(":", "");
-
+        if(checkBrand){
+            this.getCategory();
+        }
         this.setState({ fromBrands: checkBrand, defaultType, showCategoryFilter: checkBrand }, () => {
             this.getProductsList();
         })
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("resize", this.updateWindowDimensions)
+    }
+
+    
+    updateWindowDimensions() {
+        let width = window.innerWidth;
+        if (width > deviceWidth.LAPTOP) {
+            this.setState({ isLargeDevice: true })
+        } else if (width > deviceWidth.TAB) {
+            this.setState({ isLargeDevice: true })
+        } else {
+            this.setState({ isLargeDevice: false})
+        }
+
     }
 
 
@@ -70,83 +94,57 @@ class ProductsList extends React.Component {
                 this.getProductsList();
             })
         }
-        // if (prevProps.getCategories.length === this.props.getCategories.length && this.updateCategory) {
-        //     this.getCategory();
-        // }
     }
 
     getCategory = () => {
-        this.setState({ categories: this.props.getCategories }, () => {
-            // let allcat = this.state.categories.map((item) => {
-            //     item.selected = false;
-            //     return item
-            // })
-            // this.updateCategory = false
-            // this.setState({ categories: allcat })
+        let allCategories = this.props.getCategories;
+        let productFilters = allCategories.map(a => a.name);
+        let removeDuplicateFilters = [...new Set(productFilters)]
+        this.setState({ categories: this.props.getCategories, productFilters: removeDuplicateFilters }, () => {
         })
 
     }
 
     getProductsList = () => {
-        const { pageNum, pageSize, fromBrands, selectedCat, selectedCategory, defaultType } = this.state;
+        const { pageNum, pageSize, fromBrands, selectedCategory, defaultType, selectedFilters } = this.state;
         // If sort by only brand then send brand
         // If sort by only category then send category
         // If sort by both send both
         let filter = "";
         if (fromBrands) {
-            if (selectedCat) {
-                filter = `&brand=${encodeURIComponent(defaultType)}&category=${selectedCategory}`;
+            if (selectedFilters.length !==0) {
+                filter = `&brand=${encodeURIComponent(defaultType)}&category=${selectedFilters}`;
             } else {
                 filter = `&brand=${encodeURIComponent(defaultType)}`;
             }
         } else {
-            filter = `&category=${defaultType}`;
+            if(selectedFilters.length !==0){
+                filter = `&category=${defaultType}&brand=${selectedFilters}`;
+            }else{
+                filter = `&category=${defaultType}`;
+            }
+            
         }
-
 
         let restUrl = encodeURI(`${PRODUCT_BASE_URL}prod?db=mainDB&page=${pageNum}&limit=${pageSize}${filter}`);
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
                 if (!res.error) {
-                    this.setState({ productsList: res.data.products, totalProducts: res.data.total, productFilters: res.data.filters, showLoader: false })
+                    if (fromBrands) {
+                        this.setState({ productsList: res.data.products, totalProducts: res.data.total, 
+                            filterName: 'Categories', showLoader: false })
+                    }else{
+                        this.setState({ productsList: res.data.products, totalProducts: res.data.total, 
+                            filterName: res.data.filters[0].name,
+                            productFilters: res.data.filters[0].data, showLoader: false })
+                    }
+
                 } else {
 
                 }
             })
             .catch((error) => {
             })
-    }
-
-    getAllProductsBrand() {
-        this.setState({ showLoader: true, pageNum: 1, selectedCat: false, selectedCategory: "" }, () => {
-            this.getProductsList();
-            this.getCategory();
-        })
-
-    }
-
-
-    getProductsByBrandCat(cat) {
-        let categories = this.state.categories.map((item) => {
-            if (item._id === cat._id) {
-                item.selected = true
-            } else {
-                item.selected = false
-            }
-
-            return item
-        })
-        this.setState({ categories: categories, selectedCat: true, selectedCategory: cat.name, pageNum: 1, showLoader: true }, () => {
-            this.getProductsList();
-        })
-
-    }
-
-    getProductsByCatBrand(brand) {
-        let selectedCategory = this.state.defaultType;
-        this.setState({ selectedCat: true, selectedCategory: selectedCategory, defaultType: brand, fromBrands: true, pageNum: 1, showLoader: true }, () => {
-            this.getProductsList();
-        })
     }
 
 
@@ -157,9 +155,6 @@ class ProductsList extends React.Component {
             this.getProductsList();
         })
     }
-
-
-
 
     onChangePagination = (pageNum, paginationFirst, pageSize) => {
         this.setState({ pageNum: pageNum, paginationFirst: paginationFirst, pageSize: pageSize, showLoader: true }, () => {
@@ -221,14 +216,37 @@ class ProductsList extends React.Component {
         }, 2000);
     };
 
+    onFiltersChange=(e)=> {
+        let selectedFilters = [...this.state.selectedFilters];
+        if (e.checked) {
+            selectedFilters.push(e.value);
+        }
+        else {
+            for (let i = 0; i < selectedFilters.length; i++) {
+                const selectedFilter = selectedFilters[i];
+
+                if (selectedFilter == e.value) {
+                    selectedFilters.splice(i, 1);
+                    break;
+                }
+            }
+        }
+        this.setState({ selectedFilters, pageNum: 1, showLoader: true },()=>{
+            this.getProductsList();
+        });
+    }
+
 
 
     render() {
         const { pageSize, paginationFirst, displayItems, productsList, dummyProductsList, totalProducts, showLoader,
-            cartLoader, showCategoryFilter, categories, selectedCat, productFilters, toastMsg } = this.state;
+            cartLoader, showCategoryFilter, categories, selectedCat, filterName, productFilters,selectedFilters, 
+            toastMsg, isLargeDevice } = this.state;
 
         const pageTemplate = {
-            layout: 'CurrentPageReport FirstPageLink  PrevPageLink PageLinks NextPageLink LastPageLink  RowsPerPageDropdown',
+            layout: (isLargeDevice) ?
+            'CurrentPageReport FirstPageLink  PrevPageLink PageLinks NextPageLink LastPageLink  RowsPerPageDropdown' : 
+            'CurrentPageReport PrevPageLink NextPageLink RowsPerPageDropdown',
             'CurrentPageReport': (options) => {
                 return (
                     <span style={{ color: appTheme.primaryColor, userSelect: 'none', width: '160px', textAlign: 'center' }}>
@@ -242,46 +260,24 @@ class ProductsList extends React.Component {
             <Fragment>
                 <Toast ref={this.toastRef} />
                 <div className="p-grid maindiv" >
-                    <div className="p-col-2 p-mt-6">
-                        {showCategoryFilter ?
-                            <div className="p-shadow-1">
+                    {isLargeDevice &&
+                    <div className="p-col-2 p-mt-6" >
+                            <div className="filter-vl">
                                 <div className='subcat-list-item'>
-                                    <h2 style={{ padding: 10, textAlign: 'center', fontWeight: 600, color: appTheme.logoTextColor }}>
-                                        Categories
-                                    </h2>
+                                    <h3 style={{ fontWeight: 700, color: appTheme.logoTextColor, textTransform: 'capitalize' }}>
+                                        {filterName}
+                                    </h3>
                                 </div>
-                                <div className='subcat-list-item' onClick={this.getAllProductsBrand.bind(this)}>
-                                    <h4 style={{ padding: 6, textAlign: 'center', color: (selectedCat) ? appTheme.dark2 : appTheme.logoTextColor }}>
-                                        All
-                                    </h4>
-                                </div>
-                                {categories.map((cat) => (
-                                    <div className='subcat-list-item' onClick={this.getProductsByBrandCat.bind(this, cat)}
-                                    >
-                                        <h4 style={{ padding: 6, textAlign: 'center', color: (cat.selected) ? appTheme.logoTextColor : appTheme.dark2 }}>
-                                            {cat.display_name}
-                                        </h4>
-                                    </div>
-                                ))}
-                            </div> :
-                            <div className="p-shadow-1">
-                                <div className='subcat-list-item'>
-                                    <h2 style={{ padding: 10, textAlign: 'center', fontWeight: 600, color: appTheme.logoTextColor, textTransform: 'capitalize' }}>
-                                        {productFilters.length !== 0 && productFilters[0].name}
-                                    </h2>
-                                </div>
-                                {productFilters.length !== 0 && productFilters[0].data.map((brand) => (
-                                    <div className='subcat-list-item' onClick={this.getProductsByCatBrand.bind(this, brand)}>
-                                        <h4 style={{ padding: 6, textAlign: 'center', color: appTheme.dark2 }}>
-                                            {brand}
-                                        </h4>
-                                    </div>
-                                ))}
+                                {productFilters.length !== 0 && productFilters.map((brand) => (
+                                <div className="p-field-checkbox">
+                                    <Checkbox inputId={brand} value={brand}  name="brand"
+                                        checked={selectedFilters.some((item) => item === brand)} 
+                                        onChange={this.onFiltersChange} />
+                                    <label htmlFor={brand}>{brand}</label>
+                                </div>))}
                             </div>
-                        }
-
-                    </div>
-                    <div className="p-col-10">
+                    </div> }
+                    <div className={isLargeDevice ? "p-col-10" : "p-col-12" }>
                         <Divider />
                         {showLoader ?
                             <div>

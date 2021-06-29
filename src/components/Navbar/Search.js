@@ -41,9 +41,9 @@ class Search extends Component {
         if (this.state.searchText.length % 2 === 0) {
 
           let selectedFitment =  this.state.selectedFitment;
-          let fitment =  Object.keys(selectedFitment).length !== 0 ? selectedFitment.year+selectedFitment.makename+selectedFitment.modelname : "";
+          let fitment =  Object.keys(selectedFitment).length !== 0 ? (selectedFitment.year+selectedFitment.makename+selectedFitment.modelname).replace(' ','').toLowerCase() : "";
           
-          let restUrl = `${PRODUCT_BASE_URL}globalsearch/${value}?page=0?fitment=${fitment}`
+          let restUrl = `${PRODUCT_BASE_URL}globalsearch/${value}?page=0&fitment=${fitment}`
           serviceCall({}, restUrl, 'GET')
             .then((res) => {
               if (!res.error) {

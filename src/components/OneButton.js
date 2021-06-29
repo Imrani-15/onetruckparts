@@ -6,8 +6,8 @@ import {appTheme} from '../utils/Constants';
 
  
 const OneButton = ({btnType="primary", btnShape="",btnSize="", buttonLabel, buttonStyle, onClick, btnBlock=true, btnDisabled=false,showIcon=false}) => {
-        let defaultStyle = {backgroundColor:(btnDisabled) ? appTheme.dark6 : appTheme.primaryColor, 
-                            borderColor: appTheme.primaryColor, fontWeight: '500'}
+        let defaultStyle = {backgroundColor:(btnDisabled) ? appTheme.dark7 : appTheme.secondaryColor, 
+                            borderColor: appTheme.secondaryColor, fontWeight: '500', color:'#fff'}
         let updateStyle = buttonStyle ? buttonStyle : {};
 
         return (

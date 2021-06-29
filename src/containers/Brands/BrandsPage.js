@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 
-import { ScrollTop } from 'primereact/scrolltop';
+
 import { InputText } from 'primereact/inputtext';
 import { Skeleton } from 'primereact/skeleton';
 import { Button } from 'primereact/button';
 import serviceCall from '../../utils/Services';
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
-import '../Home/HomePage.css'
+import './BrandsPage.css'
 
 class BrandsPage extends React.Component {
 
@@ -99,17 +99,17 @@ class BrandsPage extends React.Component {
             result = itemList || [];
         }
         result = (
-            <div className="p-grid p-justify-center ">
+            <div className="p-grid p-justify-center">
                 {result.map((brand, index) => (
-                    <>
-                        <div className="p-col-2 p-shadow-2 p-m-2" 
+      
+                    <div className="p-col-4 p-md-2 p-lg-2 p-shadow-2 p-m-md-2" 
                         onClick={()=>this.goToProductPage(brand)}
                         key={index}>
                             <img src={brand.image} style={{ height: 100, width: '100%', objectFit: 'contain' }}
                                 onError={(e) => e.target.src = 'https://dublin.anglican.org/cmsfiles/placeholder.png'} />
                             <div style={{ fontWeight: '500', textAlign: 'center' }}>{brand.brand}</div>
                         </div>
-                    </>
+             
                 ))}
 
             </div>)
@@ -126,29 +126,22 @@ class BrandsPage extends React.Component {
 
 
     render() {
-        const { brands, searchInput, showBrands ,dummyArray} = this.state;
+        const { brands, searchInput, scrolling, showBrands ,dummyArray} = this.state;
         const filteredList = this.filterItems(brands);
         return (
             <Fragment >
-                 <ScrollTop />
                 <div style={{ margin: '3%' }}>
                         <div style={{ fontSize: 34, fontWeight: '600' }}>
                             Shop By <span style={{ fontWeight: '400' }}>Brand</span>
                         </div>
 
-                    <div className="p-m-6" 
-                        style={{ width:this.state.scrolling ? '90%' : null,display:'flex', 
-                        alignItems:'center', justifyContent:'center',
-                        position:this.state.scrolling ? 'fixed' : null, top:0,
-                        backgroundColor:'#fff',zIndex:1, padding: 12,
-                        }}>
+                    <div className={(scrolling) ? "p-m-lg-6 brands-sort-scroll" : "p-m-lg-6 brands-sort" }>
                         {this.prepareAlphabets()}
                     </div>
-                    <div className="p-m-6" style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div className="p-m-lg-6 p-m-4" style={{ display: 'flex', justifyContent: 'center'}}>
                             <span className="p-input-icon-right">
                             <InputText id="search"
-                                style={{ width: 800}}
-                                className="p-inputtext-lg p-d-block"
+                                className="p-inputtext-lg p-d-block brands-search"
                                 placeholder="Search by brand"
                                 value={searchInput} onChange={this.onSearchInputChange} />
                                  <i className="pi pi-search" style={{color:appTheme.logoTextColor}}/>
@@ -162,7 +155,7 @@ class BrandsPage extends React.Component {
                     </div> :
                     <div className="p-grid p-justify-center ">
                     {dummyArray.map((brand, index) => (
-                        <div className="p-col-2 p-shadow-2 p-m-2" key={index}>
+                        <div className="p-col-4 p-md-2 p-lg-2 p-shadow-2 p-m-md-2" key={index}>
                             <Skeleton width="100%" height="120px" />
                         </div>
                     ))}

@@ -9,9 +9,8 @@ import {PRODUCT_BASE_URL} from './Constants';
 
 export function updateProductToCart(product,quantity,type="ADD"){
     return new Promise((resolve, reject) => {
-        //let restUrl = (type === "ADD") ? `${PRODUCT_BASE_URL}cart/add/${product.osku}/${quantity}` :  `${PRODUCT_BASE_URL}cart/remove/${product.osku}/${quantity}`;
         let restUrl = `${PRODUCT_BASE_URL}cart/add/${product.osku}/${quantity}`;
-        let userCart = userProfile.getCart()
+        let userCart = userProfile.getCart();
              serviceCall({cart:userCart}, restUrl, 'POST').then((res)=>{
                 if (res && !res.data.error) {
                     userProfile.setCart(res.data.cart);

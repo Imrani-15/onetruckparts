@@ -1,0 +1,51 @@
+
+.brands-sort{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 12px;
+}
+
+.brands-sort-scroll{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    z-index: 99;
+    padding: 12px;
+    position: fixed;
+    overflow: hidden;
+    top:0;
+    background-color: #fff;
+}
+
+.brands-search{
+    width: 800px;
+}
+
+@media only screen and (max-width: 768px) {    
+    .brands-sort-scroll{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 92%;
+        flex-wrap: wrap;
+        z-index: 99;
+        padding: 12px;
+        position: fixed;
+        overflow: hidden;
+        top:0;
+        background-color: #fff;
+    }
+    
+    .brands-search{
+        width: 600px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .brands-search{
+        width: 300px;
+    }
+}

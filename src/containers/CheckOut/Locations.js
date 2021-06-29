@@ -315,6 +315,20 @@ class Locations extends React.Component {
         }, 2000);
     };
 
+    selectDeliveryAddress=(address)=>{
+        let userAddress =  this.state.userAddress.map((addr)=>{
+            if(addr._id === address._id){
+                addr.isDefault = true
+            }else{
+                addr.isDefault = false
+            }
+            return addr
+        })
+        this.setState({userAddress:userAddress},()=>{
+            this.props.selectDeliveryAddress(address)
+        })
+    }
+
 
 
     render() {
@@ -324,43 +338,46 @@ class Locations extends React.Component {
         return (
             <Fragment>
                 <Toast ref={this.toastRef} />
-                <h1>Your Addresses</h1>
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    <div className="addLocationCard" onClick={() => this.setState({ addressModal: true, newAddress: true })}>
-                        <i className="pi pi-plus" style={{ fontSize: '1.8em', fontWeight: 'bold', color: appTheme.primaryColor }}></i>
-                        <div style={{ fontSize: 22, fontWeight: '600', color: appTheme.secondaryColor, marginTop: 6 }}>Add Address</div>
-                    </div>
-                    {userAddress.map((address) => (
-                        <div className="locationCard">
-                            <div>
-                                <img src={logo} alt={'logo'} style={{ justifySelf: 'center' }} height="22px" />
+                <div>
+                    <div className="p-d-flex p-flex-wrap">
+                        <div className="p-col-12 p-md-4 card_ main">
+                            <div className="addLocationCard" onClick={()=> this.setState({addressModal:true})}>
+                                <i className="pi pi-plus" style={{ fontSize: '1.6em', fontWeight: 'bold', color: appTheme.primaryColor }}></i>
+                                <div style={{ fontSize: 18, fontWeight: '600', color: appTheme.secondaryColor, marginTop: 6 }}>Add Address</div>
                             </div>
-                            <div>
-                                <h3>{address.line1}</h3>
-                                <h3>{address.line2}</h3>
-                                <h3>{address.city}, {address.region}. {' '} {address.postalCode}</h3>
-                                <h3 style={{ textTransform: 'uppercase' }}>{address.country}</h3>
-                            </div>
-
-                            <div>
+                        </div>
+                        {userAddress.map((address) => (
+                        <div className="p-col-12 p-md-4 card_ main" >
+                            <div className={(address.isDefault) ? "locationCard selectedLocation" : "locationCard" }>
+                                <div onClick={() => this.selectDeliveryAddress(address)}>
+                                    <h4>{address.line1}</h4>
+                                    <h4>{address.line2}</h4>
+                                    <h4>{address.city}, {address.region}. {' '} {address.postalCode}</h4>
+                                    <h4 style={{ textTransform: 'uppercase' }}>{address.country}</h4>
+                                </div>
+                                <div>
                                 <OneButton
-                                    onClick={() => this.props.selectDeliveryAddress(address)}
-                                    buttonLabel={"Delivery to this address"}
+                                    onClick={() => this.selectDeliveryAddress(address)}
+                                    buttonLabel={(address.isDefault) ? "Selected address" : "Select address"}
                                     btnShape="round"
                                     buttonStyle={{
-                                        fontSize: 14,
+                                        fontSize: 15,
                                         margin: 4,
-                                        backgroundColor: appTheme.logoTextColor,
-                                        borderColor: appTheme.logoTextColor
+                                        height:36,
+                                        backgroundColor: (address.isDefault) ? appTheme.logoTextColor : appTheme.secondaryColor,
+                                        borderColor: (address.isDefault) ? appTheme.logoTextColor : appTheme.secondaryColor
                                     }}
                                 />
                                 <div>
-                                    <Button label="Edit" className="p-button-text" onClick={() => this.editAddress(address)} />
-                                    <Button label="Remove" className="p-button-text" onClick={() => this.removeAddress(address)} />
+                                    
+                                    <Button label="Edit" className="p-button-text p-button-sm p-button-info" onClick={() => this.editAddress(address)} />
+                                    <Button label="Remove" className="p-button-text p-button-sm p-button-danger" onClick={() => this.removeAddress(address)} />
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                            </div>
+                        </div>))}
+    
+                    </div>
                 </div>
                 <Dialog header={(newAddress) ? "Add New Address" : "Edit Address"} visible={addressModal} style={{ width: '36vw' }}
                     onHide={() => this.closeDialog()} modal>

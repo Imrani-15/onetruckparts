@@ -3,16 +3,13 @@ import userProfile from  './UserProfile';
 
 function getHeaders(){
     let userData = userProfile.getUserObj();
-    // onetruckparts --> true
-    // oneauto --> remove
-    // dev ---> false
-    let isProd = false
     let accessToken = userData && userData.accessToken ? userData.accessToken  : null;
+    // onetruckparts or oneauto
     if(accessToken === null){
         return  {
             headers: {
               "Content-Type": "application/json",
-             "isprod": isProd
+              "label": "oneauto"
             },
          //   withCredentials: true,
           
@@ -22,7 +19,7 @@ function getHeaders(){
             headers: {
               "Content-Type": "application/json",
               'Authorization': `Bearer ${accessToken}` ,
-              "isprod": isProd
+              "label": "oneauto"
             },
          //   withCredentials: true,
           }

@@ -24,6 +24,7 @@ export const formValidation = ( isError, formData ) => {
         }
     });
     
+    console.log("formValidation", isValid)
     return isValid;
 };
 

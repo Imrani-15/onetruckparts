@@ -75,7 +75,7 @@ class SearchProductsList extends React.Component {
     getProductsList = () => {
         const { pageNum, pageSize, fitment } = this.state;
         let search =  this.props.match.params.val.replace(":", "");
-        let restUrl =   encodeURI(`${PRODUCT_BASE_URL}globalsearch/${search}?page=${pageNum}?fitment=${fitment}&limit=${pageSize}`) ;
+        let restUrl =   encodeURI(`${PRODUCT_BASE_URL}globalsearch/${search}?page=${pageNum}&fitment=${fitment}&limit=${pageSize}`) ;
         serviceCall({}, restUrl, 'GET')
             .then((res) => {
                 if (!res.error) {

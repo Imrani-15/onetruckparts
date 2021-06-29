@@ -34,7 +34,7 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
                 /> 
            </div>
            <div className="product_footer" >
-               <div style={{height:80}} onClick={() => openProductDetail(product)}>
+               <div className="product_sub-footer" onClick={() => openProductDetail(product)}>
                 <div style={{
                     fontSize:13,
                     color:'#999',
@@ -45,14 +45,8 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
                 </div>
                 <div className="product_title">{product.title}</div>
                </div>
-                <div style={{fontSize:12,color:appTheme.dark1}}>
-                    Part Number: {product.partnumber}
-                </div>
                 <div style={{display:'flex',flexDirection:'row',marginTop:8, justifyContent:'space-between',alignItems:'center'}}>
-                    <div style={{
-                        fontSize:18,
-                        fontWeight:'700'
-                    }}>
+                    <div className="product_price">
                         ${product.price}
                     </div>
                     <Button icon="pi pi-heart" className="p-button-rounded p-button-sm"  

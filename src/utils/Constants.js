@@ -24,6 +24,7 @@ export const deviceWidth = {
   TAB: 767,
   LAPTOP: 1023
 }
+
 export const appTheme = {
 
     primaryColor:'#041E42',
@@ -38,6 +39,8 @@ export const appTheme = {
     dark4:'#444444',
     dark5:'#555555',
     dark6:'#666',
+    dark7:'#777',
+    dark8:'#888',
     dark9:'#999999'
  
  

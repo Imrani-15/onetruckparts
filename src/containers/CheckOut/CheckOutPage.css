@@ -7,9 +7,7 @@
 }
 
 .addLocationCard{
-    height: 260px;
-    width: 290px;
-    margin: 12px;
+    height: 200px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -17,20 +15,53 @@
     border: 2px dashed #C7C7C7;
     border-radius: 4px;
     cursor: pointer;
+    background-color: #f7f7f7;
+}
+
+.card_ main{
+    padding-right: 6px;
 }
 
 .locationCard{
-    height: 260px;
-    width: 290px;
-    margin: 12px;
-    padding: 20px;
+    height: 200px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border: 2px solid #C7C7C7;
+    border: 1.4px solid #C7C7C7;
     border-radius: 4px;
     cursor: pointer;
 }
+
+.selectedLocation{
+    border: 1px solid #fac491 !important;
+    box-shadow: 2px 4px 8px 2px #fddcbd, 02px 6px 20px 2px #f8cca2;
+}
+
+.locationCard h4{
+    margin-bottom: 1px;
+    color: #555;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+    -webkit-box-orient: vertical;
+}
+
+.locationBadge{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    background-color: green;
+    width: 110px;
+    padding: 3px;
+    margin-bottom: 12px;
+}   
+
+
 
 .vl{
     border-left: 2px solid #000;
@@ -39,22 +70,62 @@
     margin-right: 16px;
 }
 
-.ant-steps-item-title{
-    font-size: 20px;
+
+.p-steps .p-steps-item .p-steps-number{
+    border-radius: 50% !important;
+    height: 2.5rem !important;
+    width: 2.5rem !important;
+    background-color: #fff !important;
 }
 
-.steps-content {
-    margin-top: 26px;
-    padding: 16px;
-    background-color: #fafafa;
-    border: 1px dashed #e9e9e9;
-    border-radius: 2px;
+.p-steps .p-steps-item.p-highlight .p-steps-number{
+    background-color: #FF891E !important;
+}
+
+
+
+
+
+
+  .payment_selection_card{
+      width: 140px;
+      height: 90px;
+      border-radius: 4px;
+      padding: 4px;
+      display: grid;
+      justify-content: center;
+      text-align: center;
+      margin-right: 16px;
   }
-  
-  .steps-action {
-    margin-top: 24px;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: flex-end;
+
+  .payment_selection_card h2{
+      margin: 0px !important;
+  }
+
+  .payment_selection_card i{
+      font-size: 1.9rem;
+  }
+
+  .checkout-main{
+    margin: 0px 60px;
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+  }
+
+  .checkout-submain{
+      margin-bottom: 30px;
+  }
+
+  @media only screen and (max-width: 768px) {
+    .checkout-main{
+        margin: 0px 0px;
+        padding: 8px;
+
+    }
+
+    .checkout-submain{
+        flex-direction: column-reverse;
+        margin-bottom: 15px;
+    }
   }

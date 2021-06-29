@@ -280,7 +280,7 @@ class MobileNavbar extends React.Component {
                </Link>
             </div>
             <div className="mobile-navbar-main">
-               <Search navProps={this.props.history} />
+               {/* <Search navProps={this.props.history} /> */}
             </div>
 
             <Drawer

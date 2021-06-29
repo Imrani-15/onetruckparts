@@ -33,11 +33,10 @@
     margin-bottom: 5px;
 }
 
-.cartdetailsAlign{
+.cartdetails-spacebetween{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px
 }
 
 .cartdetailsText{
@@ -51,5 +50,12 @@
 }
 
 
+.border-bottom{
+    border-bottom: 1.4px solid #ececec;
+}
 
-
+.col-align-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -347,10 +347,11 @@ class DesktopNavbar extends React.Component {
                      {categories.length !== 0 && categories.map((cat, index) => (
                         <>
                            {(index > 0) && <div className="navbar-vl" />}
+                           {(index < 6) && 
                            <Link className="navbar-btn-text" key={index}
                               to={{ pathname: '/products/category:' + cat.name, state: { catName: cat.name } }}
                            >{cat.display_name}</Link>
-
+                           }
                         </>
                      ))}
                   </div>
@@ -379,7 +380,7 @@ class DesktopNavbar extends React.Component {
                               <div className="fitment-list">
                                  <div>
                                     <div style={{ fontSize: 16, fontWeight: '600', marginBottom: 0 }}>{fit.makename} {' '} ( {fit.year} )</div>
-                                    <div style={{ fontSize: 14, fontWeight: '500', color: appTheme.dark5 }}>{fit.modelname}, {fit.mfrlabel}</div>
+                                    <div style={{ fontSize: 14, fontWeight: '500', color: appTheme.dark5 }}>{fit.modelname}</div>
                                  </div>
                               </div>
                               <div>
@@ -403,7 +404,7 @@ class DesktopNavbar extends React.Component {
             </OverlayPanel>
 
             {/* Create New Fitment */}
-            <Dialog visible={createNewFitment} closable={false} header={null} style={{ width: '80%' }} modal className="fitment-dialog" >
+            <Dialog visible={createNewFitment} closable={false} header={null} style={{ width: '80%' }}  modal className="fitment-dialog" >
                <div style={{ position: 'absolute', top: -40, right: 10, cursor: "pointer"}} 
                         onClick={() => this.setState({createNewFitment:false})}>
                      <i className="pi pi-times" style={{ fontSize: 22, fontWeight: 'bold', color: '#fff',padding: 4 }}></i>
