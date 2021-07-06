@@ -67,3 +67,58 @@ export function removeFitmentFromGarage(fitmentIndex){
     });
 
 }
+
+
+export function addressValidate(address){
+    return new Promise((resolve, reject) => {
+        let restUrl = `${PRODUCT_BASE_URL}address/validate`
+            serviceCall(address, restUrl, 'POST').then((res)=>{
+                resolve(res);
+            })
+            .catch((err)=>{
+               reject(err)
+            })
+
+    }).catch((ex) => {
+        console.log(ex);
+    });
+
+}
+
+
+
+export function taxValidation(address){
+    return new Promise((resolve, reject) => {
+        let restUrl = `${PRODUCT_BASE_URL}address/tax`;
+        let userCart = userProfile.getCart();
+        let taxPayload = {
+            "type": "SalesInvoice",
+            "companyCode": "272160843",
+            "date": "2022-04-12",
+            "customerCode": "oneauto",
+            "purchaseOrderNo": "2017-04-12-001",
+            "addresses": {
+              "SingleLocation": address
+            },
+            "lines": userCart,
+            "commit": true,
+            "currencyCode": "USD",
+            "description": "Yarn"
+        }
+             serviceCall({taxDocument:taxPayload}, restUrl, 'POST').then((res)=>{
+                if (res && !res.data.error) {
+                   console.log("Rajesh", res)
+                }
+                resolve(res);
+            })
+            .catch((err)=>{
+               reject(err)
+            })
+
+    }).catch((ex) => {
+        console.log(ex);
+    });
+
+}
+
+

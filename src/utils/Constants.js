@@ -4,6 +4,9 @@ export const BASE_URL = 'http://localhost:8000/';
 
 export const PRODUCT_BASE_URL = 'https://customtemplateapis-dot-gentle-epoch-277301.uk.r.appspot.com/';
 
+
+export const GOOGLE_MERCHANT_ID = '01007024856980678208';
+
 export const userRoles = {
     CUSTOMER : "customer",
     ADMIN : "admin"
@@ -55,10 +58,10 @@ export const menuItems = [
       navOptionName: `My Orders`,
       screenToNavigate: '/my-orders',
     },
-    // {
-    //   navOptionName: `About Us`,
-    //   screenToNavigate: '/about',
-    // },
+    {
+      navOptionName: `Track Order`,
+      screenToNavigate: '/track-order',
+    }
     // {
     //   navOptionThumb: 'receipt',
     //   navOptionName: `Terms & Conditions`,

@@ -169,7 +169,7 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      padding: 4px;
+      padding: 8px 14px;
   }
 
   .search-list{

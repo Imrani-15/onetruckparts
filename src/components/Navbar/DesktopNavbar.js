@@ -2,18 +2,17 @@ import React, { Fragment } from 'react';
 
 import {
    Row, Col,
-   Popover,
+   Popover, Button,
    Select, Divider,
    Badge, Avatar
 } from 'antd';
 import { Link } from 'react-router-dom';
 import { Dialog } from 'primereact/dialog';
 import { OverlayPanel } from 'primereact/overlaypanel';
-import { Button } from 'primereact/button';
 import { connect } from "react-redux";
 import {
    DownOutlined, ShoppingCartOutlined,
-   CarOutlined, UserOutlined
+   CarOutlined, UserOutlined, DeleteOutlined
 } from '@ant-design/icons';
 
 import Search from './Search';
@@ -56,19 +55,19 @@ class DesktopNavbar extends React.Component {
    componentDidMount() {
       this.getCategories();
       let userData = userProfile.getUserObj();
-      this.setState({ userData: userData },()=>{
+      this.setState({ userData: userData }, () => {
          this.setFitmentData();
       });
    }
 
-   setFitmentData(){
+   setFitmentData() {
       // if(this.state.userData && this.state.userData.accessToken){
       //     this.getFitmentList();
       // }else{
-          let guestGarage = userProfile.getGarage();
-          this.setState({fitmentList:guestGarage && guestGarage.length!==0 ? guestGarage : []})
+      let guestGarage = userProfile.getGarage();
+      this.setState({ fitmentList: guestGarage && guestGarage.length !== 0 ? guestGarage : [] })
       //}
-  }
+   }
 
    getCategories = () => {
       let restUrl = `${PRODUCT_BASE_URL}prod/categories`
@@ -109,9 +108,9 @@ class DesktopNavbar extends React.Component {
       this.overLayRef.current.toggle(e)
    }
 
-   createNewFitment=()=>{
+   createNewFitment = () => {
       this.getFitmentYear();
-      this.setState({createNewFitment:true},()=>{
+      this.setState({ createNewFitment: true }, () => {
          this.overLayRef.current.hide()
       })
    }
@@ -218,15 +217,15 @@ class DesktopNavbar extends React.Component {
    }
 
    deleteVechile = (index) => {
-      removeFitmentFromGarage(index).then((resp)=>{
+      removeFitmentFromGarage(index).then((resp) => {
          if (!resp.data.error) {
-            this.setState({ fitmentList: resp.data.garage}) 
+            this.setState({ fitmentList: resp.data.garage })
          }
       })
    }
 
 
-   
+
    renderMenu = () => {
       const { userData } = this.state;
       return (
@@ -260,13 +259,6 @@ class DesktopNavbar extends React.Component {
                   </h4>
                </Link>
             )}
-            <Link className='menu-list-item' to='/settings'
-               onClick={this.hideMenuPopOver.bind(this)}
-            >
-               <h4 style={{ color: appTheme.lightColor }}>
-                  Settings
-               </h4>
-            </Link>
             {(userData && userData.accessToken) &&
                <div className='menu-list-item'
                   onClick={this.logOut.bind(this)}
@@ -299,11 +291,12 @@ class DesktopNavbar extends React.Component {
                   <Row type="flex" style={{ alignItems: 'center' }}>
                      <Col md={0} lg={3}></Col>
                      <Col md={18} lg={15}>
-                        <Search 
-                           navProps={this.props.history} 
-                           fitmentList={fitmentList} 
+                        <Search
+                           navProps={this.props.history}
+                           fitmentList={fitmentList}
                            addNewFitment={this.createNewFitment.bind(this)}
-                           />
+                           deleteVechile={this.deleteVechile.bind(this)}
+                        />
                      </Col>
                      <Col md={1} lg={1}></Col>
                      <Col md={5} lg={4} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -336,21 +329,22 @@ class DesktopNavbar extends React.Component {
                      <div className="desktop-navbar-carttext">My Cart</div>
                   </Link>
                </Col>
-               <Col md={0} lg={1} />
-               <Col md={3} lg={5} className="navbar-style">
+
+               <Col md={3} lg={4} className="navbar-style">
                   <Link className="navbar-brand"
                      to={'/brands'}
                   >BRANDS</Link>
                </Col>
+               <Col md={0} lg={2} />
                <Col md={15} lg={13} className="navbar-style">
                   <div className="navbar-main-categories">
                      {categories.length !== 0 && categories.map((cat, index) => (
                         <>
                            {(index > 0) && <div className="navbar-vl" />}
-                           {(index < 6) && 
-                           <Link className="navbar-btn-text" key={index}
-                              to={{ pathname: '/products/category:' + cat.name, state: { catName: cat.name } }}
-                           >{cat.display_name}</Link>
+                           {(index < 6) &&
+                              <Link className="navbar-btn-text" key={index}
+                                 to={{ pathname: '/products/category:' + cat.name, state: { catName: cat.name } }}
+                              >{cat.display_name}</Link>
                            }
                         </>
                      ))}
@@ -374,18 +368,11 @@ class DesktopNavbar extends React.Component {
                         <h3 style={{ color: appTheme.logoTextColor }}>No Fitmet Data</h3>
                      </div> :
                      <div>
-                        <div style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Select Your Vehicle</div>
+                        <div style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Your Vehicle</div>
                         {fitmentList.map((fit, index) => (
                            <div className="p-shadow-2 fitment-list p-mb-2" >
-                              <div className="fitment-list">
-                                 <div>
-                                    <div style={{ fontSize: 16, fontWeight: '600', marginBottom: 0 }}>{fit.makename} {' '} ( {fit.year} )</div>
-                                    <div style={{ fontSize: 14, fontWeight: '500', color: appTheme.dark5 }}>{fit.modelname}</div>
-                                 </div>
-                              </div>
-                              <div>
-                                 <Button icon="pi pi-trash" className="p-button-danger p-button-text" onClick={() => this.deleteVechile(index)} />
-                              </div>
+                              <h4 style={{ fontWeight: 'bold', marginBottom: 0 , color:appTheme.primaryColor}}>( {fit.year} )  {' '}  {fit.makename} |{' '} {fit.modelname}</h4>
+                              <Button type="text" danger icon={<DeleteOutlined />} onClick={() => this.deleteVechile(index)}/>
                            </div>
                         ))}
                      </div>
@@ -393,7 +380,7 @@ class DesktopNavbar extends React.Component {
                   <Divider />
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 22 }}>
                      <OneButton
-                        onClick={()=>this.createNewFitment()}
+                        onClick={() => this.createNewFitment()}
                         buttonLabel={"Add New Vehicle"}
                         btnSize="large"
                         btnBlock={false}
@@ -404,10 +391,10 @@ class DesktopNavbar extends React.Component {
             </OverlayPanel>
 
             {/* Create New Fitment */}
-            <Dialog visible={createNewFitment} closable={false} header={null} style={{ width: '80%' }}  modal className="fitment-dialog" >
-               <div style={{ position: 'absolute', top: -40, right: 10, cursor: "pointer"}} 
-                        onClick={() => this.setState({createNewFitment:false})}>
-                     <i className="pi pi-times" style={{ fontSize: 22, fontWeight: 'bold', color: '#fff',padding: 4 }}></i>
+            <Dialog visible={createNewFitment} closable={false} header={null} style={{ width: '80%' }} modal className="fitment-dialog" >
+               <div style={{ position: 'absolute', top: -40, right: 10, cursor: "pointer" }}
+                  onClick={() => this.setState({ createNewFitment: false })}>
+                  <i className="pi pi-times" style={{ fontSize: 22, fontWeight: 'bold', color: '#fff', padding: 4 }}></i>
                </div>
                <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <div style={{ backgroundColor: appTheme.secondaryColor, width: '100%', borderRadius: 40, padding: 12, }}>

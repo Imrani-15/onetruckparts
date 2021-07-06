@@ -10,6 +10,7 @@ import ReactSnackBar from "../../components/ReactSnackBar";
 import emptyCart from '../../assets/emptycart.jpg';
 import OneButton from '../../components/OneButton';
 import { updateProductToCart } from '../../utils/commonService';
+import {trimString} from '../../utils/Utils';
 import userProfile from '../../utils/UserProfile';
 import serviceCall from '../../utils/Services';
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
@@ -145,7 +146,7 @@ class CartPage extends React.Component {
                                             </Col>
                                             <Col xs={1} md={1} lg={1}></Col>
                                             <Col xs={16} md={11} lg={11} >
-                                                <h3 style={{ color: appTheme.secondaryColor, fontWeight: 'bold', margin: 0 }}>{cart.title}</h3>
+                                                <h3 style={{ color: appTheme.secondaryColor, fontWeight: 'bold', margin: 0 }}>{trimString(cart.title, 90)}</h3>
                                                 <h4 style={{ color: appTheme.secondaryColor }}>$ {cart.price}</h4>
                                                 <h4 style={{ color: appTheme.logoTextColor }}>Sub Total : $ {cart.total ? cart.total : 0}</h4>
                                             </Col>
@@ -185,6 +186,11 @@ class CartPage extends React.Component {
                                     <h3>Sub Total:</h3>
                                     <h3>${orderTotal}</h3>
                                 </div>
+                                <div className="cartdetails-spacebetween">
+                                    <h3 style={{color:appTheme.logoTextColor}}>Shipping:</h3>
+                                    <h3 style={{color:appTheme.logoTextColor}}>Free</h3>
+                                </div>
+                            
                                 <Divider />
                                 <div className="cartdetails-spacebetween">
                                     <h2>Total:</h2>

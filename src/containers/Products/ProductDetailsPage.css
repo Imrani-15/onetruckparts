@@ -17,6 +17,12 @@
     border: 0.6px solid #ccc;
 }
 
+.kitImage{
+    height: 150px;
+    width: 150px;
+    object-fit: contain;
+}
+
 .product_li{
     font-size: 14px;
     color: #6c757d;

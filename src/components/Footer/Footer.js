@@ -52,10 +52,10 @@ class Footer extends React.Component {
                             <Link className="footer-link">
                                 Careers
                                 </Link>
-                            <Link className="footer-link">
+                            <Link className="footer-link" to={"/terms_condition"}>
                                 Terms & Conditions
                                 </Link>
-                            <Link className="footer-link">
+                            <Link className="footer-link" to={"/privacy_policy"}>
                                 Privacy Policy
                                 </Link>
                         </div>

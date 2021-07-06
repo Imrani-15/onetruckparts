@@ -32,6 +32,11 @@ export const isNotEmpty = val =>{
     return !!val;
 }
 
+export const trimString = (string='', length=60) => {
+    return string.length > length ? 
+           string.substring(0, length) + '...' :
+           string;
+  };
 
 export const  showToastMessage =(toastRef,type, title, detail) => {
     return toastRef.current.show({ severity: type, summary: title, detail: detail, life: 5000 })

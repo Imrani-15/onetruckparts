@@ -1,6 +1,6 @@
 import React from 'react';
 
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import { connect } from "react-redux";
 import { Toast } from 'primereact/toast';
 import {Password} from 'primereact/password';
@@ -49,7 +49,7 @@ class Login extends React.Component {
           isError.emailId = 
             emailValidation.test(value)
                 ? ''
-                : 'Email is not valid!';
+                : 'Email is not valid.';
             break;
           case 'password': 
           isError.password = 
@@ -97,7 +97,10 @@ class Login extends React.Component {
                                     let restUrl = `${PRODUCT_BASE_URL}cart/addGuestCart`;
                                     callSerivce({cart:guestCart}, restUrl, 'POST')
                                         .then((res) => {
-
+                                            if(!res.data.error){
+                                                userProfile.setCart(res.data.cart);
+                                                userProfile.setGarage(res.data.garage);
+                                            }
                                         })
                                 }
 
@@ -186,7 +189,7 @@ class Login extends React.Component {
                 <Toast ref={this.toastRef} />
                 {loading && <AppSpinner /> }
                 <div className="login-main p-shadow-1">
-                     <img src={logo} alt={'logo'} style={{justifySelf: 'center'}} height="48px"  />
+                    <img src={logo} alt={'logo'} style={{justifySelf: 'center'}} height="48px"  onClick={()=>this.props.history.replace('/')}  />
                     <h1 style={{textAlign:'center', fontWeight:'500', color:appTheme.secondaryColor}}>Sign in to continue</h1>
                     <Messages ref={this.messageRef} style={{width:300}} />
                     <div className="p-field">
@@ -208,7 +211,7 @@ class Login extends React.Component {
                           <small id="password-help" className="p-error p-d-block">{isError.password}</small>
                         )}
                     </div>
-                    {/* <div className="resetpasswordText" onClick={()=>this.props.history.push('/createnewpassword')} >Forgot Password</div> */}
+                    <div className="resetpasswordText" onClick={()=>this.props.history.push('/forgot-password')} >Forgot Password</div>
                     <OneButton 
                         onClick={this.submitLogin} 
                         buttonLabel={"Login"}

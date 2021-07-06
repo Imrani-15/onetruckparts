@@ -45,6 +45,15 @@
     border-right:2px  solid #eee;
 }
 
+.filter-label{
+    text-transform: lowercase;
+}
+
+
+.filter-label::first-letter {
+    text-transform: uppercase;
+}
+
 .p-checkbox:not(.p-checkbox-disabled) .p-checkbox-box.p-highlight{
     background: #FF891E !important;
     border-color: #FF891E !important;

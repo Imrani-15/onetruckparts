@@ -15,8 +15,7 @@ import truckimg1 from '../../assets/truckimg1.jpg';
 import truckimg2 from '../../assets/truckimg2.jpg';
 import truckimg3 from '../../assets/truckimg3.jpg';
 import ReactSnackBar from "../../components/ReactSnackBar";
-import userProfile from '../../utils/UserProfile';
-import { isNotEmpty } from '../../utils/Utils';
+import { trimString } from '../../utils/Utils';
 import { updateProductToCart } from '../../utils/commonService';
 import { PRODUCT_BASE_URL, appTheme, deviceWidth } from '../../utils/Constants';
 
@@ -201,7 +200,7 @@ class HomePage extends React.Component {
                                                             style={index === 1 ? { borderLeft: "2px solid #EAEDED" } : {}}
                                                             onClick={() => this.displayDialog(product.items)}
                                                         >
-                                                            <div className="cat-grid-title">{product.items.title}</div>
+                                                            <div className="cat-grid-title">{trimString(product.items.title, 50)}</div>
                                                             <img src={product.items.image}
                                                                 className="cat-grid-image"
                                                                 onError={(e) => e.target.src = 'https://dublin.anglican.org/cmsfiles/placeholder.png'}
@@ -231,8 +230,8 @@ class HomePage extends React.Component {
                         </div>
 
                         <div className="p-col-12 p-md-12 p-lg-7 p-xl-8 p-col-align-center p-justify-center">
-                            <div style={{ fontSize: 22 }}>{selectedPrd.title}</div>
-                            <div style={{ fontSize: 20, marginTop: 12, marginBottom: 12 }}>$ {selectedPrd.price}</div>
+                            <h3>{trimString(selectedPrd.title, 70)}</h3>
+                            <p style={{marginBottom: 12, color:appTheme.logoTextColor }}>$ {selectedPrd.price}</p>
                             <OneButton
                                 onClick={() => this.addToCart(selectedPrd)}
                                 buttonLabel={"Add to cart"}

@@ -35,8 +35,6 @@ class ProductsList extends React.Component {
             cartLoader: false,
             fromBrands: false,
             categories: [],
-            showCategoryFilter: false,
-            selectedCategory: "",
             filterName:"",
             productFilters: [],
             selectedFilters:[],
@@ -61,7 +59,7 @@ class ProductsList extends React.Component {
         if(checkBrand){
             this.getCategory();
         }
-        this.setState({ fromBrands: checkBrand, defaultType, showCategoryFilter: checkBrand }, () => {
+        this.setState({ fromBrands: checkBrand, defaultType }, () => {
             this.getProductsList();
         })
     }
@@ -90,7 +88,7 @@ class ProductsList extends React.Component {
             let defaultType = this.props.match.params.type.replace(":", "");
             let brand = new URLSearchParams(this.props.location.search).get("brands");
             let checkBrand = isNotEmpty(brand) ? brand : false;
-            this.setState({ showLoader: true, pageNum: 1, defaultType, fromBrands: checkBrand }, () => {
+            this.setState({ showLoader: true, pageNum: 0,paginationFirst: 0, pageSize: 24, defaultType, fromBrands: checkBrand }, () => {
                 this.getProductsList();
             })
         }
@@ -106,7 +104,7 @@ class ProductsList extends React.Component {
     }
 
     getProductsList = () => {
-        const { pageNum, pageSize, fromBrands, selectedCategory, defaultType, selectedFilters } = this.state;
+        const { pageNum, pageSize, fromBrands, defaultType, selectedFilters } = this.state;
         // If sort by only brand then send brand
         // If sort by only category then send category
         // If sort by both send both
@@ -240,7 +238,7 @@ class ProductsList extends React.Component {
 
     render() {
         const { pageSize, paginationFirst, displayItems, productsList, dummyProductsList, totalProducts, showLoader,
-            cartLoader, showCategoryFilter, categories, selectedCat, filterName, productFilters,selectedFilters, 
+            cartLoader, filterName, productFilters,selectedFilters, 
             toastMsg, isLargeDevice } = this.state;
 
         const pageTemplate = {
@@ -261,7 +259,7 @@ class ProductsList extends React.Component {
                 <Toast ref={this.toastRef} />
                 <div className="p-grid maindiv" >
                     {isLargeDevice &&
-                    <div className="p-col-2 p-mt-6" >
+                    <div className="p-col-2 p-mt-3" >
                             <div className="filter-vl">
                                 <div className='subcat-list-item'>
                                     <h3 style={{ fontWeight: 700, color: appTheme.logoTextColor, textTransform: 'capitalize' }}>
@@ -273,7 +271,7 @@ class ProductsList extends React.Component {
                                     <Checkbox inputId={brand} value={brand}  name="brand"
                                         checked={selectedFilters.some((item) => item === brand)} 
                                         onChange={this.onFiltersChange} />
-                                    <label htmlFor={brand}>{brand}</label>
+                                    <label htmlFor={brand} className="filter-label">{brand}</label>
                                 </div>))}
                             </div>
                     </div> }
