@@ -20,7 +20,7 @@ import serviceCall from '../../utils/Services';
 import { appTheme, PRODUCT_BASE_URL, orderStatus } from '../../utils/Constants';
 
 
-import './Orders.css'
+import {styles} from '../../styles/Orders.css'
 
 const { Step } = Steps;
 const { Panel } = Collapse;
@@ -99,7 +99,7 @@ class Orders extends React.Component {
 
         return (
             <Fragment>
-                <div className="checkout-main">
+                <div className={styles.orderMain}>
                     <Row className="checkout-submain">
                         <Col xs={24} md={24} lg={22} className="p-shadow-1 p-p-lg-4 p-p-2" >
                             <h2>My Orders</h2>
@@ -127,7 +127,7 @@ class Orders extends React.Component {
                                                         <h5 style={{ color: appTheme.dark6 }}>Order Createdon : {' '} {new Date(order.created).toDateString()}</h5>
                                                     </div>
                                                 </span>
-                                                <div className="order-steps">
+                                                <div className={styles.orderSteps}>
                                                     <Steps size="small" progressDot
                                                         responsive
                                                         current={

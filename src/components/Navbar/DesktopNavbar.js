@@ -6,7 +6,7 @@ import {
    Select, Divider,
    Badge, Avatar
 } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link } from 'next/router';
 import { Dialog } from 'primereact/dialog';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { connect } from "react-redux";
@@ -27,7 +27,7 @@ import userProfile from '../../utils/UserProfile';
 import { removeFitmentFromGarage } from '../../utils/commonService';
 import FirebaseAuth from '../../containers/Auth/FirebaseAuth';
 
-import "./Navbar.css";
+import {styles} from "../../styles/Navbar.css";
 
 const { Option } = Select;
 class DesktopNavbar extends React.Component {
@@ -238,7 +238,7 @@ class DesktopNavbar extends React.Component {
                      </Avatar>
                      <h3 style={{ alignSelf: 'center', marginLeft: 10 }}>{userData.emailId}</h3>
                   </div> :
-                  <Link className="navbar-btn-text" to="/login">
+                  <Link className={styles.navbarBtnText} to="/login">
                      <OneButton
                         buttonLabel={"Login or Sign Up"}
                         btnSize="large"
@@ -281,13 +281,13 @@ class DesktopNavbar extends React.Component {
 
       return (
          <Fragment>
-            <Row type="flex" className="navbar-main">
-               <Col md={4} lg={3} className="navbar-style">
+            <Row type="flex" className={styles.navbarMain}>
+               <Col md={4} lg={3} className={styles.navbarStyle}>
                   <Link to={'/'} >
                      <img src={logo} alt={'logo'} className="desktop-navbar-icon" />
                   </Link>
                </Col>
-               <Col md={17} lg={18} className="navbar-style">
+               <Col md={17} lg={18} className={styles.navbarStyle}>
                   <Row type="flex" style={{ alignItems: 'center' }}>
                      <Col md={0} lg={3}></Col>
                      <Col md={18} lg={15}>
@@ -300,7 +300,7 @@ class DesktopNavbar extends React.Component {
                      </Col>
                      <Col md={1} lg={1}></Col>
                      <Col md={5} lg={4} style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <UserOutlined className="desktop-navbar-usericon" />
+                        <UserOutlined className={styles.desktopNavbarUsericon} />
                         <Popover content={this.renderMenu()}
                            trigger="click"
                            placement="bottom"
@@ -308,10 +308,10 @@ class DesktopNavbar extends React.Component {
                            onVisibleChange={this.handleVisibleChange}
                            title="">
                            {(userData && userData.accessToken) ?
-                              <div className="desktop-navbar-text">My Account <DownOutlined /></div> :
+                              <div className={styles.desktopNavbarText}>My Account <DownOutlined /></div> :
                               <div style={{ color: '#fff', marginBottom: 0 }}>
-                                 <div className="desktop-navbar-text">My Account</div>
-                                 <div className="desktop-navbar-subtext">
+                                 <div className={styles.desktopNavbarText}>My Account</div>
+                                 <div className={styles.desktopNavbarSubtext}>
                                     Login/Sign Up  <DownOutlined />
                                  </div>
                               </div>
@@ -324,19 +324,19 @@ class DesktopNavbar extends React.Component {
                   <Link style={{ display: 'flex', alignItems: 'center', paddingLeft: 10, marginTop: 4 }} to={'/cart'}>
                      <Badge style={{ backgroundColor: appTheme.logoTextColor, borderColor: appTheme.secondaryColor }}
                         count={userdata && userdata.cartcount ? userdata.cartcount : 0}>
-                        <ShoppingCartOutlined className="desktop-navbar-carticon" />
+                        <ShoppingCartOutlined className={styles.desktopNavbarCarticon} />
                      </Badge>
-                     <div className="desktop-navbar-carttext">My Cart</div>
+                     <div className={styles.desktopNavbarCarttext}>My Cart</div>
                   </Link>
                </Col>
 
-               <Col md={3} lg={4} className="navbar-style">
-                  <Link className="navbar-brand"
+               <Col md={3} lg={4} className={styles.navbarStyle}>
+                  <Link className={styles.navbarBrand}
                      to={'/brands'}
                   >BRANDS</Link>
                </Col>
                <Col md={0} lg={2} />
-               <Col md={15} lg={13} className="navbar-style">
+               <Col md={15} lg={13} className={styles.navbarStyle}>
                   <div className="navbar-main-categories">
                      {categories.length !== 0 && categories.map((cat, index) => (
                         <>
@@ -350,9 +350,9 @@ class DesktopNavbar extends React.Component {
                      ))}
                   </div>
                </Col>
-               <Col md={6} lg={5} className="navbar-style">
-                  <div className="selectVechile" onClick={(e) => this.toggleFitmentPopover(e)}>
-                     <CarOutlined className="desktop-navbar-caricon" />  Select Your Vehicle
+               <Col md={6} lg={5} className={styles.navbarStyle}>
+                  <div className={styles.selectVechile} onClick={(e) => this.toggleFitmentPopover(e)}>
+                     <CarOutlined className={styles.desktopNavbarCaricon} />  Select Your Vehicle
                   </div>
                </Col>
             </Row>

@@ -11,7 +11,7 @@ import AppSpinner from '../../components/AppSpinner';
 import {appTheme} from  '../../utils/Constants';
 import { emailValidation, isNotEmpty } from '../../utils/Utils';
 
-import './Auth.css'
+import {styles} from  '../../styles/Auth.css'
 
 
 class ForgotPassword extends React.Component {

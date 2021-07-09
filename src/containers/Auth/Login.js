@@ -17,8 +17,7 @@ import userProfile from '../../utils/UserProfile';
 import {appTheme, PRODUCT_BASE_URL} from  '../../utils/Constants';
 
 import callSerivce from '../../utils/Services';
-import './Auth.css'
-
+import {styles} from '../../styles/Auth.css'
 class Login extends React.Component {
   
  
@@ -185,10 +184,10 @@ class Login extends React.Component {
     render(){
         const  {loading, emailId, password, isError , formInvalid} = this.state;
         return(
-            <div className="login-body">
+            <div className={styles.loginBody}>
                 <Toast ref={this.toastRef} />
                 {loading && <AppSpinner /> }
-                <div className="login-main p-shadow-1">
+                <div className={styles.loginMain} className="p-shadow-1">
                     <img src={logo} alt={'logo'} style={{justifySelf: 'center'}} height="48px"  onClick={()=>this.props.history.replace('/')}  />
                     <h1 style={{textAlign:'center', fontWeight:'500', color:appTheme.secondaryColor}}>Sign in to continue</h1>
                     <Messages ref={this.messageRef} style={{width:300}} />

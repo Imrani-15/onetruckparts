@@ -25,7 +25,7 @@ import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
 import { isNotEmpty } from '../../utils/Utils';
 
-import './ProductDetailsPage.css';
+import {styles} from '../../styles/ProductDetailsPage.css';
 import { Divider } from 'primereact/divider';
 
 
@@ -212,10 +212,10 @@ class ProductDetailsPage extends React.Component {
 
     thumbnailTemplate(item) {
         if (isNotEmpty(item)) {
-            return <img src={item} className="thumbnailImage"
+            return <img src={item} className={styles.thumbnailImage}
                 onError={(e) => e.target.src = 'https://dublin.anglican.org/cmsfiles/placeholder.png'} />
         } else {
-            return <img src={dummyImage} className="thumbnailImage"
+            return <img src={dummyImage} className={styles.thumbnailImage}
                 onError={(e) => e.target.src = 'https://dublin.anglican.org/cmsfiles/placeholder.png'} />
         }
 
@@ -227,7 +227,7 @@ class ProductDetailsPage extends React.Component {
 
         return (
             <Fragment>
-                <div className="prod-details-main">
+                <div className={styles.detailmaindiv}>
                     {!showLoader ?
                         <Row className="prod-details-submain">
                             <Col xs={24} sm={24} md={24} lg={10} className="p-p-lg-3" >
@@ -308,7 +308,7 @@ class ProductDetailsPage extends React.Component {
                         <Row align="middle">
                         {productKitItems.map((kit)=>(
                             <Col xs={24} sm={24} md={24} lg={5} className="p-p-lg-3 p-shadow-2 p-m-4" style={{display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
-                                <img src={kit.image} className="kitImage"
+                                <img src={kit.image} className={styles.kitImage}
                                 onError={(e) => e.target.src = 'https://dublin.anglican.org/cmsfiles/placeholder.png'} />
                                 <h3>{trimString(kit.title, 60)}</h3>
                                 <h4 style={{alignSelf:'flex-start', color:appTheme.logoTextColor}}>Quantity: {kit.setquantity}</h4>

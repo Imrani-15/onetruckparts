@@ -11,7 +11,7 @@ import AppSpinner from '../../components/AppSpinner';
 import { formValidation, emailValidation } from '../../utils/Utils';
 import {PRODUCT_BASE_URL} from  '../../utils/Constants';
 import callSerivce from '../../utils/Services';
-import './Auth.css'
+import {styles} from '../../styles/Auth.css'
 
 
 class Register extends React.Component {
@@ -120,11 +120,11 @@ class Register extends React.Component {
     render() {
         const {loading, userName, emailId, formInvalid, password, confirmPassword, isError } = this.state;
         return (
-            <div className="login-body">
+            <div className={styles.loginBody}>
                 <Toast ref={this.toastRef} />
                 
                 {loading && <AppSpinner /> }
-                <div className="login-main">
+                <div className={styles.loginMain}>
                     <h1 style={{ textAlign: 'left',fontWeight:'400' }}>Create your account</h1>
                     <Messages ref={this.messageRef} style={{width:300}} />
                     <div className="p-field">

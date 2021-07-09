@@ -15,7 +15,7 @@ import userProfile from '../../utils/UserProfile';
 import serviceCall from '../../utils/Services';
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
-import './CartPage.css';
+//import {styles} from '../../styles/CartPage.css';
 
 class CartPage extends React.Component {
     constructor(props) {

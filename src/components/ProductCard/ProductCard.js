@@ -3,20 +3,23 @@ import { Skeleton } from 'primereact/skeleton';
 import { Button } from 'primereact/button';
 import OneButton from '../OneButton';
 
-import './ProductCard.css'
+
+import {styles} from  '../../styles/ProductCard.css';
 import { appTheme } from "../../utils/Constants";
+
+
 
 
 const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, saveLater }) => {
     let showLoading = showSkeletion ? showSkeletion : false;
   if(showLoading){
     return (
-        <div className="product_main">
-           <div className="product_header">
+        <div className={styles.productMain}>
+           <div className={styles.productHeader}>
                   <Skeleton size="14rem"></Skeleton>
            </div>
          
-           <div className="product_footer" >
+           <div className={styles.productFooter} >
                <div style={{height:80}}>
                     <Skeleton width="100%" height="50px"/>
                </div>
@@ -27,13 +30,13 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
   );
   }else{
     return (
-        <div className="product_main">
-           <div className="product_header" onClick={() => openProductDetail(product)}>
-                <img src={product.image}  className="product_image"  alt={product.title}
+        <div className={styles.productMain}>
+           <div className={styles.productHeader} className= "onClick={() => openProductDetail(product)}">
+                <img src={product.image}  className={styles.productImage}  alt={product.title}
                 onError={(e) => e.target.src='https://dublin.anglican.org/cmsfiles/placeholder.png'}
                 /> 
            </div>
-           <div className="product_footer" >
+           <div className={styles.productFooter} >
                <div className="product_sub-footer" onClick={() => openProductDetail(product)}>
                 <div style={{
                     fontSize:13,
@@ -43,10 +46,10 @@ const ProductCard = ({ showSkeletion, product, openProductDetail, addToCart, sav
                 }}>
                   SKU :  {product.osku}
                 </div>
-                <div className="product_title">{product.title}</div>
+                <div className={styles.productTitle}>{product.title}</div>
                </div>
                 <div style={{display:'flex',flexDirection:'row',marginTop:8, justifyContent:'space-between',alignItems:'center'}}>
-                    <div className="product_price">
+                    <div className={styles.productPrice}>
                         ${product.price}
                     </div>
                     <Button icon="pi pi-heart" className="p-button-rounded p-button-sm"  

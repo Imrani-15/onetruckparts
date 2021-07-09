@@ -21,7 +21,7 @@ import serviceCall from '../../utils/Services';
 import { showToastMessage } from '../../utils/Utils';
 import { appTheme, PRODUCT_BASE_URL, GOOGLE_MERCHANT_ID } from '../../utils/Constants';
 
-import './CheckOutPage.css';
+import {styles} from '../../styles/CheckOutPage.css';
 
 
 class CheckOutPage extends React.Component {
@@ -407,8 +407,8 @@ class CheckOutPage extends React.Component {
         return (
             <Fragment>
 
-                <div className="checkout-main">
-                    <Row className="checkout-submain">
+                <div className={styles.cardBorder}>
+                    <Row className={styles.checkoutSubmain}>
                         <Col xs={24} md={24} lg={18} className="p-shadow-1 p-p-4" >
                             <Messages ref={this.messageRef} />
                             <Timeline>

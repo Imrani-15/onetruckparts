@@ -1,12 +1,12 @@
 import React from "react";
 import {Carousel} from 'antd';
 
-import './styles/Slider.css'
+import {styles} from '../../styles/Slider.css';
 
 
 const Slider = ({ data, goToBrandsPage }) => {
   return (
-  <div  className="container">
+  <div  className={styles.container}>
       <Carousel autoplay dots={false}>
         {data.map((item)=>{
         return(

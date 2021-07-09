@@ -18,7 +18,7 @@ import ReactSnackBar from "../../components/ReactSnackBar";
 import ProductCard from '../../components/ProductCard/ProductCard';
 import AppSpinner from '../../components/AppSpinner';
 
-import './ProductList.css';
+import {styles} from '../../styles/ProductList.css';
 
 class ProductsList extends React.Component {
     constructor(props) {
@@ -257,11 +257,11 @@ class ProductsList extends React.Component {
         return (
             <Fragment>
                 <Toast ref={this.toastRef} />
-                <div className="p-grid maindiv" >
+                <div className={styles.maindiv}>
                     {isLargeDevice &&
                     <div className="p-col-2 p-mt-3" >
-                            <div className="filter-vl">
-                                <div className='subcat-list-item'>
+                            <div className={styles.filterVl}>
+                                <div className={styles.subcatListItem}>
                                     <h3 style={{ fontWeight: 700, color: appTheme.logoTextColor, textTransform: 'capitalize' }}>
                                         {filterName}
                                     </h3>
@@ -271,7 +271,7 @@ class ProductsList extends React.Component {
                                     <Checkbox inputId={brand} value={brand}  name="brand"
                                         checked={selectedFilters.some((item) => item === brand)} 
                                         onChange={this.onFiltersChange} />
-                                    <label htmlFor={brand} className="filter-label">{brand}</label>
+                                    <label htmlFor={brand} className={styles.filterLabel}>{brand}</label>
                                 </div>))}
                             </div>
                     </div> }

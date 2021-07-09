@@ -4,7 +4,7 @@ import {
    Select, Drawer,
    Badge, Avatar
 } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link } from 'next/router';
 
 
 import { connect } from "react-redux";
@@ -24,7 +24,7 @@ import { appTheme, menuItems, PRODUCT_BASE_URL, userRoles } from '../../utils/Co
 import userProfile from '../../utils/UserProfile';
 import FirebaseAuth from '../../containers/Auth/FirebaseAuth';
 
-import "./Navbar.css";
+import {styles} from '../..styles/Navbar.css';
 
 const { Option } = Select;
 class MobileNavbar extends React.Component {
@@ -97,7 +97,7 @@ class MobileNavbar extends React.Component {
       const { userData } = this.state;
       return (
          <div>
-            <div className="menu-list-btn-item">
+            <div className={styles.menuListBtnItem}>
                {(userData && userData.emailId) ?
                   <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                      <Avatar size="large" style={{ backgroundColor: appTheme.primaryColor }} >
@@ -105,7 +105,7 @@ class MobileNavbar extends React.Component {
                      </Avatar>
                      <h3 style={{ alignSelf: 'center', marginLeft: 10 }}>{userData.emailId}</h3>
                   </div> :
-                  <Link className="navbar-btn-text" to="/login">
+                  <Link className={styles.navbarBtnText} to="/login">
                      <OneButton
                         buttonLabel={"Login or Sign Up"}
                         btnSize="large"
@@ -118,7 +118,7 @@ class MobileNavbar extends React.Component {
                   </Link>}
             </div>
             {menuItems.map((item, index) =>
-               <Link className='menu-list-item' key={index} to={item.screenToNavigate}
+               <Link className={styles.menuListItem} key={index} to={item.screenToNavigate}
                   onClick={this.hideMenuPopOver.bind(this)}
                >
                   <h4 style={{ color: appTheme.lightColor }}>
@@ -126,7 +126,7 @@ class MobileNavbar extends React.Component {
                   </h4>
                </Link>
             )}
-            <Link className='menu-list-item' to='/settings'
+            <Link className={styles.menuListItem} to='/settings'
                onClick={this.hideMenuPopOver.bind(this)}
             >
                <h4 style={{ color: appTheme.lightColor }}>
@@ -134,7 +134,7 @@ class MobileNavbar extends React.Component {
               </h4>
             </Link>
             {(userData && userData.accessToken) &&
-               <div className='menu-list-item'
+               <div className={styles.menuListItem}
                   onClick={this.logOut.bind(this)}
                >
                   <h4 style={{ color: appTheme.lightColor }}>
@@ -269,7 +269,7 @@ class MobileNavbar extends React.Component {
 
       return (
          <Fragment>
-            <div className="mobile-navbar-main">
+            <div className={styles.mobileNavbarMain}>
                <i className="pi pi-align-justify" style={{ color: '#fff', fontSize: 22 }} onClick={() => this.setState({ showSideMenu: true })} ></i>
                <img src={logo} alt={'logo'} style={{ alignSelf: 'center' }} height="28px" />
                <Link to={'/cart'}>
@@ -279,7 +279,7 @@ class MobileNavbar extends React.Component {
                   </Badge>
                </Link>
             </div>
-            <div className="mobile-navbar-main">
+            <div className={styles.mobileNavbarMain}>
                {/* <Search navProps={this.props.history} /> */}
             </div>
 
@@ -290,7 +290,7 @@ class MobileNavbar extends React.Component {
                visible={showSideMenu}
             >
                <div>
-                  <div className="menu-list-btn-item">
+                  <div className={styles.menuListBtnItem}>
                      {(userData && userData.emailId) ?
                         <div style={{ display: 'flex', flexDirection: 'row', }}>
                            <Avatar size="large" style={{ backgroundColor: appTheme.primaryColor }} >
@@ -298,7 +298,7 @@ class MobileNavbar extends React.Component {
                            </Avatar>
                            <h3 style={{ alignSelf: 'center', marginLeft: 10 }}>{userData.emailId}</h3>
                         </div> :
-                        <Link className="navbar-btn-text" to="/login">
+                        <Link className={styles.navbarBtnText} to="/login">
                            <OneButton
                               buttonLabel={"Login or Sign Up"}
                               btnSize="large"
@@ -309,24 +309,24 @@ class MobileNavbar extends React.Component {
                            />
                         </Link>}
                   </div>
-                  <Link className='menu-list-item'
+                  <Link className={styles.menuListItem}
                      to="/"
                   >
                      <h4 style={{ color: appTheme.lightColor }}>
                         Home
                         </h4>
                   </Link>
-                  <div className="mobilemenu-header">
-                     <Link className="mobile-navbar-brand"
+                  <div className={styles.mobilemenuHeader}>
+                     <Link className={styles.mobileNavbarBrand}
                         to={'/brands'}
                      >Brands</Link>
                   </div>
-                  <div className="mobilemenu-header">
+                  <div className={styles.mobilemenuHeader}>
                      Categories
                   </div>
                   <div>
                      {categories.length !== 0 && categories.map((cat, index) =>
-                        <Link className='menu-list-item' key={index}
+                        <Link className={styles.menuListItem} key={index}
                            to={{ pathname: '/products/category:' + cat.name, state: { catName: cat.name } }}
                            onClick={this.hideMenuPopOver.bind(this)}
                         >
@@ -338,7 +338,7 @@ class MobileNavbar extends React.Component {
                   </div>
 
                   {menuItems.map((item, index) =>
-                     <Link className='menu-list-item' key={index} to={item.screenToNavigate}
+                     <Link className={styles.menuListItem} key={index} to={item.screenToNavigate}
                         onClick={this.hideMenuPopOver.bind(this)}
                      >
                         <h4 style={{ color: appTheme.lightColor }}>
@@ -347,7 +347,7 @@ class MobileNavbar extends React.Component {
                      </Link>
                   )}
                   {(userData && userData.accessToken) &&
-                     <div className='menu-list-item'
+                     <div className={styles.menuListItem}
                         onClick={this.logOut.bind(this)}
                      >
                         <h4 style={{ color: appTheme.lightColor }}>

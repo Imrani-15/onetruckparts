@@ -7,7 +7,7 @@ import { Button } from 'primereact/button';
 import serviceCall from '../../utils/Services';
 import { appTheme, PRODUCT_BASE_URL } from '../../utils/Constants';
 
-import './BrandsPage.css'
+import {styles} from '../../styles/BrandsPage.css';
 
 class BrandsPage extends React.Component {
 
@@ -135,13 +135,13 @@ class BrandsPage extends React.Component {
                             Shop By <span style={{ fontWeight: '400' }}>Brand</span>
                         </div>
 
-                    <div className={(scrolling) ? "p-m-lg-6 brands-sort-scroll" : "p-m-lg-6 brands-sort" }>
+                    <div className={(scrolling) ? "p-m-lg-6 {styles.brandsSortScroll}" : "p-m-lg-6 brands-sort" }>
                         {this.prepareAlphabets()}
                     </div>
                     <div className="p-m-lg-6 p-m-4" style={{ display: 'flex', justifyContent: 'center'}}>
                             <span className="p-input-icon-right">
                             <InputText id="search"
-                                className="p-inputtext-lg p-d-block brands-search"
+                                className="p-inputtext-lg p-d-block {styles.brandsSearch}"
                                 placeholder="Search by brand"
                                 value={searchInput} onChange={this.onSearchInputChange} />
                                  <i className="pi pi-search" style={{color:appTheme.logoTextColor}}/>

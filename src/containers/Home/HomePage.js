@@ -22,7 +22,7 @@ import { PRODUCT_BASE_URL, appTheme, deviceWidth } from '../../utils/Constants';
 
 import { appStore } from '../../App';
 
-import './HomePage.css'
+import {styles} from '../../styles/HomePage.css'
 
 const { Option } = Select;
 class HomePage extends React.Component {
@@ -174,18 +174,18 @@ class HomePage extends React.Component {
             <Fragment>
                 <Slider data={sliderList} goToBrandsPage={this.goToBrandsPage.bind(this)} />
                 {showFeaturedProducts ?
-                    <div className="homePage-style">
+                    <div className={styles.homePageStyle}>
                         {dummyArray.map((cat) => (
-                            <div className="carousel-featured-products" style={{ paddingBottom: '0.4%' }}>
+                            <div className={styles.carouselFeaturedProducts} style={{ paddingBottom: '0.4%' }}>
                                 <Skeleton width="100%" height="240px" />
                             </div>
                         ))}
                     </div> :
-                    <div className="homePage-style">
+                    <div className={styles.homePageStyle}>
                         {featuredProducts.length !== 0 && featuredProducts.map((cat, index) => (
                             <div key={`cat-${index}`}>
                                 {cat.sectionType === "grid" ?
-                                    <div className="carousel-featured-products-grid">
+                                    <div className={styles.carouselFeaturedProductsGrid}>
 
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             {cat.results.map((product, index) => (
@@ -200,19 +200,19 @@ class HomePage extends React.Component {
                                                             style={index === 1 ? { borderLeft: "2px solid #EAEDED" } : {}}
                                                             onClick={() => this.displayDialog(product.items)}
                                                         >
-                                                            <div className="cat-grid-title">{trimString(product.items.title, 50)}</div>
+                                                            <div className={styles.catGridTitle}>{trimString(product.items.title, 50)}</div>
                                                             <img src={product.items.image}
-                                                                className="cat-grid-image"
+                                                                className={styles.catGridImage}
                                                                 onError={(e) => e.target.src = 'https://dublin.anglican.org/cmsfiles/placeholder.png'}
                                                                 alt={product.items.title} />
                                                         </div>}
                                                 </>
-                                            ))}
+                                            ))}pDialog
                                         </div>
                                     </div> :
-                                    <div className="carousel-featured-products">
+                                    <div className={styles.carouselFeaturedProducts}>
                                         <Carousel value={cat.items} numVisible={5} numScroll={2} responsiveOptions={this.responsiveOptions} id={"cat-carousel"}
-                                            itemTemplate={this.renderProductTemplate.bind(this)} header={<div className="cat-scoll-header">{cat.heading}</div>} />
+                                            itemTemplate={this.renderProductTemplate.bind(this)} header={<div className={styles.catScollHeader}>{cat.heading}</div>} />
                                     </div>}
                             </div>
                         ))}

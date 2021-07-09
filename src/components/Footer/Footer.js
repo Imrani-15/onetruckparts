@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'next/router';
 import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import logo from '../../assets/oneauto.png';
@@ -9,7 +9,7 @@ import insta from '../../assets/insta.png';
 import twitter from '../../assets/twitter.png';
 import youtube from '../../assets/youtube.png';
 import { appTheme } from '../../utils/Constants';
-import './Footer.css'
+import {styles} from  '../../styles/Footer.css';
 
 class Footer extends React.Component {
     constructor(props) {
@@ -29,53 +29,53 @@ class Footer extends React.Component {
         return (
             <Fragment>
                 {this.state.matches &&
-                <div className="footer-main">
+                <div className={styles.footerMain}>
                     <div className="p-grid">
-                        <div className="p-col-4 footer-col">
+                        <div className="p-col-4"className={styles.footerCol}>
                             <img src={logo} height="42px" style={{ objectFit: 'contain', alignSelf: 'flex-start' }} />
 
                             <div className="p-mt-6">
-                                <div className="footer-title">Contact Us</div>
-                                <div className="footer-text p-mt-2">
+                                <div className={styles.footerTitle}>Contact Us</div>
+                                <div className={styles.footerText} className="p-mt-2">
                                     <i className="pi pi-phone p-mr-4" style={{ color: appTheme.logoTextColor }} />  (888) 520-2490
                                 </div>
-                                <div className="footer-text p-mt-2">
+                                <div className={styles.footerText} className="p-mt-2">
                                     <i className="pi pi-envelope p-mr-4" style={{ color: appTheme.logoTextColor }} /> sales@oneauto.us
                                 </div>
                             </div>
                         </div>
-                        <div className="p-col-2 footer-col">
-                            <div className="footer-title">Information</div>
-                            <Link className="footer-link" to={"/about-us"}>
+                        <div className="p-col-2" className={styles.footerCol}>
+                            <div className={styles.footerTitle}>Information</div>
+                            <Link className={styles.footerLink} to={"/about-us"}>
                                 About Us
                                 </Link>
-                            <Link className="footer-link">
+                            <Link className={styles.footerLink}>
                                 Careers
                                 </Link>
-                            <Link className="footer-link" to={"/terms_condition"}>
+                            <Link className={styles.footerLink} to={"/terms_condition"}>
                                 Terms & Conditions
                                 </Link>
-                            <Link className="footer-link" to={"/privacy_policy"}>
+                            <Link className={styles.footerLink} to={"/privacy_policy"}>
                                 Privacy Policy
                                 </Link>
                         </div>
-                        <div className="p-col-2 footer-col">
-                            <div className="footer-title">Helpful</div>
-                            <Link className="footer-link">
+                        <div className="p-col-2" className={styles.footerCol}>
+                            <div className={styles.footerTitle}>Helpful</div>
+                            <Link className={styles.footerLink}>
                                 Help Center
                             </Link>
-                            <Link className="footer-link">
+                            <Link className={styles.footerLink}>
                                 Returns
                             </Link>
-                            <Link className="footer-link">
+                            <Link className={styles.footerLink}>
                                 Contact Us
                             </Link>
-                            <Link className="footer-link">
+                            <Link className={styles.footerLink}>
                                 Shipping Information
                             </Link>
                         </div>
-                        <div className="p-col-4 footer-col" style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
-                            <div className="footer-title p-ml-6" style={{ alignSelf: 'center' }}>
+                        <div className="p-col-4" className={styles.footerCol} style={{ justifyContent: 'center', alignItems: 'flex-end' }}>
+                            <div className="{styles.footerTitle} p-ml-6" style={{ alignSelf: 'center' }}>
                                 Subscribe For Email
                             </div>
                             <div className="p-formgroup-inline p-mt-4">
@@ -91,7 +91,7 @@ class Footer extends React.Component {
                         </div>
 
                     </div>
-                    <div className="footer-bottom">
+                    <div className={styles.footerBottom}>
                         <img src={fb} height="38px" style={{ objectFit: 'contain',marginRight:18}} />
                         <img src={insta} height="38px" style={{ objectFit: 'contain',marginRight:18}} />
                         <img src={youtube} height="38px" style={{ objectFit: 'contain',marginRight:18}} />

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from "react-redux";
-import { Link } from 'react-router-dom';
+import { Link } from 'next/router';
 
 import { Input, AutoComplete, Dropdown, Button } from 'antd';
 
@@ -9,7 +9,7 @@ import serviceCall from '../../utils/Services';
 import { isNotEmpty } from '../../utils/Utils';
 import { PRODUCT_BASE_URL, appTheme } from '../../utils/Constants';
 
-import '../Navbar/Navbar.css'
+import {styles} from '../../styles/Navbar/Navbar.css'
 
 class Search extends Component {
 
